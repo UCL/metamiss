@@ -1,0 +1,13 @@
+metamiss notes
+==============
+
+metamiss, logimor(varname) is wrong - behaves like logimor(varname[1]) 
+metamiss2, logimor(varname) is correct
+
+Tim's thoughts 5/6/18 on metamiss:
+
+	My reason for asking how metamiss interfaces with other software is that I think this could affect use. Say I have already used admetan and now want to use your method. I really want to do admetan + options to invoke the metamiss method. I would also be up for a metamiss prefix command (very similar idea to mi estimate). If it doesn’t work like this, would it be hard to alter/extend?
+
+	Can you specify IMOR parameters to be different for different studies in a M-A? (Might be appealing if some studies stop following up and use LOCF after certain events, but others don’t.)
+
+	As for a selling point, have you considered a BMJ RM&R paper? You seem to have made it sufficiently general and published enough to have a handle on how it works, plus good examples. For me, I would find this compelling if you i) emphasise the injustice of studies with missing data getting undue weight, so we should down-weight studies at higher risk of bias, and ii) this approach reflects the potential for bias and additional uncertainty due to missing outcome data in a transparent, principled and simple way.

@@ -1,24 +1,30 @@
-*! version 3.15  Ian White 3aug2009
-* version 3.15  Ian White 3aug2009 - checks for negative imors; lists cases with missing estimate or se
-* version 3.14  10mar2009 - fixes bug with title("...")
-* version 3.13  16sep2008 - updated to Stata 10.1: method(MC) is 4-5 times faster 
-*                           as it uses drawnorm and rbeta() instead of my random.ado
-* version 3.12  27feb2008 - checks metan version before starting. Included in final SJ submission 22aug2008.
-* version 3.11  19dec2007 - options passed to metan are printed
-*                           bug fix: method(MC) was wrong
-* version 3.10  21nov2007 - bug fixes: method(MC), corrlogimor(), nip() work
-*                           changes: simple dots, drop timer option
-*                           re-organised output
-* version 3.9  29oct2007 - bug fix: includes dotter.ado
-* version 3.8  11oct2007 - state when metan starts (so user can see source of error); small bug in gamblehollis
-* version 3.7   1oct2007 - logimor defaults to 0 if sdlogimor specified
-* version 3.6   7sep2007 - new gamblehollis option; report measure used; method(mc) defaults to RR not all 3; if meta not done, explain why; warning if w1 used.
-* version 3.5   5sep2007 - report weighting scheme; imputes for studies with all reason counts 0 (but exits if all studies are like this)
-* version 3.4    4sep2007 - new syntax allowing ica0 or ica0(var var) etc.; icab/icaw the right way round; big rewrite of Julian's part
-* version 3.3   24apr2007 - (Julian) changed adjustments for empty cells
-* version 3.2   24apr2007 - selects by `measure' not by `rr', `or', `rd'
-* version 3.1   24apr2007 - graphs fixed
-* version 3.0    9feb2007 - combined Ian's and Julian's programs
+/*
+*! version 3.16  Ian White 27sep2018
+version 3.16  Ian White 27sep2018
+	corrected error message if called with no observations
+	check if logimor() etc are variables, and if so return an error
+	[previously their first value was taken. To do: handle them as variables]
+version 3.15  3aug2009 - checks for negative imors; lists cases with missing estimate or se
+version 3.14  10mar2009 - fixes bug with title("...")
+version 3.13  16sep2008 - updated to Stata 10.1: method(MC) is 4-5 times faster 
+                          as it uses drawnorm and rbeta() instead of my random.ado
+version 3.12  27feb2008 - checks metan version before starting. Included in final SJ submission 22aug2008.
+version 3.11  19dec2007 - options passed to metan are printed
+                          bug fix: method(MC) was wrong
+version 3.10  21nov2007 - bug fixes: method(MC), corrlogimor(), nip() work
+                          changes: simple dots, drop timer option
+                          re-organised output
+version 3.9  29oct2007 - bug fix: includes dotter.ado
+version 3.8  11oct2007 - state when metan starts (so user can see source of error); small bug in gamblehollis
+version 3.7   1oct2007 - logimor defaults to 0 if sdlogimor specified
+version 3.6   7sep2007 - new gamblehollis option; report measure used; method(mc) defaults to RR not all 3; if meta not done, explain why; warning if w1 used.
+version 3.5   5sep2007 - report weighting scheme; imputes for studies with all reason counts 0 (but exits if all studies are like this)
+version 3.4    4sep2007 - new syntax allowing ica0 or ica0(var var) etc.; icab/icaw the right way round; big rewrite of Julian's part
+version 3.3   24apr2007 - (Julian) changed adjustments for empty cells
+version 3.2   24apr2007 - selects by `measure' not by `rr', `or', `rd'
+version 3.1   24apr2007 - graphs fixed
+version 3.0    9feb2007 - combined Ian's and Julian's programs
+*/
 
 prog def metamiss
 version 10.1
@@ -26,6 +32,8 @@ version 10.1
 * Note: this file includes programs expectn, exit498
 
 ********************************** CHECK METAN VERSION **********************************
+
+if _N==0 error 2000
 
 tempvar one
 gen `one'=1
@@ -36,7 +44,7 @@ local oldmetan = `oldmetan' | _rc>0
 if `oldmetan' {
     di as error "Your version of -metan- appears to be too old to be compatible with -metamiss-."
     di as error "Please upgrade to a more recent version (e.g. from http://fmwww.bc.edu/RePEc/bocode/m)."
-    di as error "You can do this simply by typing: " as input "net install metan, replace" 
+    di as error "You can do this simply by running " as input "{stata net install metan, replace}" 
     exit 498
 }
 drop `one'
@@ -212,6 +220,21 @@ foreach arm in E C {
       local imor`arm'=exp(`logimor`arm'')
       if `logimor`arm''<-50 local imor`arm' 0
    }
+}
+
+* check if logimor() etc are variables, and if so return an error
+tempvar thing
+gen `thing' = 0
+foreach arg in logimorE logimorC imorE imorC sdlogimorE sdlogimorC corrlogimor {
+	if mi("``arg''") continue
+	qui replace `thing' = ``arg''
+	summ `thing', meanonly
+	local arg = subinstr("`arg'","C","",1)
+	local arg = subinstr("`arg'","E","",1)
+	if r(max)>r(min) {
+		di as error "Sorry, metamiss cannot at present handle `arg'() varying across individuals"
+		exit 498
+	}
 }
 
 ********************************* END OF COMMON PARSING *********************************

@@ -1,0 +1,13 @@
+v 3
+d metamiss: Meta-analysis with missing data
+d Program by Ian White and Julian Higgins
+d Version 3.16
+d Distribution-Date: 27sep2018
+
+* Main callable files
+f metamiss.ado
+f metamiss.sthlp
+
+* Examples
+f haloperidol.do
+f haloperidol.dta

@@ -1,6 +1,6 @@
 /*
-*! version 3.16  Ian White 27sep2018
-version 3.16  Ian White 27sep2018
+*! version 3.16  Ian White 02oct2018
+version 3.16  Ian White 02oct2018
 	corrected error message if called with no observations
 	check if logimor() etc are variables, and if so return an error
 	[previously their first value was taken. To do: handle them as variables]

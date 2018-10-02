@@ -1,6 +1,6 @@
 {smcl}
 {* 7sep2007}{* Ian White}{...}
-{* updated 27sep2018}{* Ian White}{...}
+{* updated 02oct2018}{* Ian White}{...}
 {hline}
 {cmd:help metamiss}
 {hline}

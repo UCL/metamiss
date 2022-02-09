@@ -1,5 +1,6 @@
 /*
-*! version 3.16  Ian White 02oct2018
+*! version 3.16.1  Ian White 9feb2022
+	only indenting changed
 version 3.16  Ian White 02oct2018
 	corrected error message if called with no observations
 	check if logimor() etc are variables, and if so return an error
@@ -828,15 +829,17 @@ if `nmeasures'==1 {
     if `"`idopt'`options'`eform'`graph'"'!="" di as text `"with options: `idopt' `options' `eform' `graph'"' _c
     di as text " ...)"
     if "`debug'"=="debug" di `"metan `eststar' `sestar' `if' `in', `idopt' `options' `eform' `graph'"'
-qui count if mi(`eststar',! `sestar')
-if r(N)>0 {
-    di as error "Missing values of estimate and/or standard error found"
-    foreach name in eststar sestar pEstar pCstar {
-        char ``name''[varname] `name'
-    }
-    l `id' `eststar' `sestar' `pEstar' `pCstar' if mi(`eststar',! `sestar'), subvarname
-    exit 498
-}
+
+	qui count if mi(`eststar', !`sestar')
+	if r(N)>0 {
+		di as error "Missing values of estimate and/or standard error found"
+		foreach name in eststar sestar pEstar pCstar {
+			char ``name''[varname] `name'
+		}
+		l `id' `eststar' `sestar' `pEstar' `pCstar' if mi(`eststar',! `sestar'), subvarname
+		exit 498
+	}
+
     metan `eststar' `sestar' `if' `in', `idopt' `options' `eform' `graph' effect(`log' `measure')
     qui gen _ES = `eststar'
     if "`eform'"=="eform" qui replace _ES=exp(_ES)

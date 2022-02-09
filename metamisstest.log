@@ -1,0 +1,187 @@
+-------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  C:\Users\rmjwiww\Documents\metamisstest.log
+  log type:  text
+ opened on:   3 Jul 2018, 18:36:31
+Log file metamisstest.log opened on  3 Jul 2018 at 18:36:31
+
+. cd C:\Users\rmjwiww\Documents
+C:\Users\rmjwiww\Documents
+
+. clear
+
+. input study r1 f1 m1 r2 f2 m2
+
+         study         r1         f1         m1         r2         f2         m2
+  1. 1 10 80 10 10 80 0
+  2. 2 20 70 10 10 50 40
+  3. end
+
+. gen logimor=_n
+
+. 
+. metamiss r1 f1 m1 r2 f2 m2, logimor(1) nograph
+*******************************************************************
+******** METAMISS: meta-analysis allowing for missing data ********
+********                  Simple imputation                ********
+*******************************************************************
+Measure: RR.
+Method: ICA-IMOR (impute using IMORs 2.718281828459045 2.718281828459045).
+Weighting scheme: w4.
+
+(Calling metan with options:   eform nograph ...)
+
+           Study     |     ES    [95% Conf. Interval]     % Weight
+---------------------+---------------------------------------------------
+1                    |  1.128       0.499     2.551         36.66
+2                    |  1.012       0.544     1.882         63.34
+---------------------+---------------------------------------------------
+I-V pooled ES        |  1.053       0.643     1.726        100.00
+---------------------+---------------------------------------------------
+
+  Heterogeneity chi-squared =   0.04 (d.f. = 1) p = 0.835
+  I-squared (variation in ES attributable to heterogeneity) =   0.0%
+
+  Test of ES=1 : z=   0.20 p = 0.838
+
+. metamiss r1 f1 m1 r2 f2 m2, logimor(2) nograph
+*******************************************************************
+******** METAMISS: meta-analysis allowing for missing data ********
+********                  Simple imputation                ********
+*******************************************************************
+Measure: RR.
+Method: ICA-IMOR (impute using IMORs 7.38905609893065 7.38905609893065).
+Weighting scheme: w4.
+
+(Calling metan with options:   eform nograph ...)
+
+           Study     |     ES    [95% Conf. Interval]     % Weight
+---------------------+---------------------------------------------------
+1                    |  1.332       0.607     2.925         29.82
+2                    |  0.791       0.474     1.321         70.18
+---------------------+---------------------------------------------------
+I-V pooled ES        |  0.924       0.601     1.420        100.00
+---------------------+---------------------------------------------------
+
+  Heterogeneity chi-squared =   1.18 (d.f. = 1) p = 0.277
+  I-squared (variation in ES attributable to heterogeneity) =  15.5%
+
+  Test of ES=1 : z=   0.36 p = 0.719
+
+. metamiss r1 f1 m1 r2 f2 m2, logimor(logimor) nograph
+*******************************************************************
+******** METAMISS: meta-analysis allowing for missing data ********
+********                  Simple imputation                ********
+*******************************************************************
+Measure: RR.
+Method: ICA-IMOR (impute using IMORs 2.718281828459045 2.718281828459045).
+Weighting scheme: w4.
+
+(Calling metan with options:   eform nograph ...)
+
+           Study     |     ES    [95% Conf. Interval]     % Weight
+---------------------+---------------------------------------------------
+1                    |  1.128       0.499     2.551         36.66
+2                    |  1.012       0.544     1.882         63.34
+---------------------+---------------------------------------------------
+I-V pooled ES        |  1.053       0.643     1.726        100.00
+---------------------+---------------------------------------------------
+
+  Heterogeneity chi-squared =   0.04 (d.f. = 1) p = 0.835
+  I-squared (variation in ES attributable to heterogeneity) =   0.0%
+
+  Test of ES=1 : z=   0.20 p = 0.838
+
+. 
+. metamiss2 r1 f1 m1 r2 f2 m2, impmean(1) metanopt(nograph)
+
+*******************************************************************
+******** METAMISS2: meta-analysis allowing for missing data *******
+********               IMP without uncertainty             ********
+*******************************************************************
+
+Informative missingness parameter: logIMOR
+Measure of interest:               Risk ratio
+Method:                            Taylor series approximation
+Second stage model:                Random effects meta-analysis
+
+(Calling metan with options: nograph ...)
+
+           Study     |     ES    [95% Conf. Interval]     % Weight
+---------------------+---------------------------------------------------
+1                    |  1.128       0.499     2.551         36.66
+2                    |  1.012       0.544     1.882         63.34
+---------------------+---------------------------------------------------
+D+L pooled ES        |  1.053       0.643     1.726        100.00
+---------------------+---------------------------------------------------
+
+  Heterogeneity chi-squared =   0.04 (d.f. = 1) p = 0.835
+  I-squared (variation in ES attributable to heterogeneity) =   0.0%
+  Estimate of between-study variance Tau-squared =  0.0000
+
+  Test of ES=1 : z=   0.20 p = 0.838
+
+. metamiss2 r1 f1 m1 r2 f2 m2, impmean(2) metanopt(nograph)
+
+*******************************************************************
+******** METAMISS2: meta-analysis allowing for missing data *******
+********               IMP without uncertainty             ********
+*******************************************************************
+
+Informative missingness parameter: logIMOR
+Measure of interest:               Risk ratio
+Method:                            Taylor series approximation
+Second stage model:                Random effects meta-analysis
+
+(Calling metan with options: nograph ...)
+
+           Study     |     ES    [95% Conf. Interval]     % Weight
+---------------------+---------------------------------------------------
+1                    |  1.332       0.607     2.925         32.95
+2                    |  0.791       0.474     1.321         67.05
+---------------------+---------------------------------------------------
+D+L pooled ES        |  0.939       0.581     1.518        100.00
+---------------------+---------------------------------------------------
+
+  Heterogeneity chi-squared =   1.18 (d.f. = 1) p = 0.277
+  I-squared (variation in ES attributable to heterogeneity) =  15.5%
+  Estimate of between-study variance Tau-squared =  0.0210
+
+  Test of ES=1 : z=   0.26 p = 0.798
+
+. metamiss2 r1 f1 m1 r2 f2 m2, impmean(logimor) metanopt(nograph)
+
+*******************************************************************
+******** METAMISS2: meta-analysis allowing for missing data *******
+********               IMP without uncertainty             ********
+*******************************************************************
+
+Informative missingness parameter: logIMOR
+Measure of interest:               Risk ratio
+Method:                            Taylor series approximation
+Second stage model:                Random effects meta-analysis
+
+(Calling metan with options: nograph ...)
+
+           Study     |     ES    [95% Conf. Interval]     % Weight
+---------------------+---------------------------------------------------
+1                    |  1.128       0.499     2.551         28.32
+2                    |  0.791       0.474     1.321         71.68
+---------------------+---------------------------------------------------
+D+L pooled ES        |  0.875       0.567     1.350        100.00
+---------------------+---------------------------------------------------
+
+  Heterogeneity chi-squared =   0.52 (d.f. = 1) p = 0.470
+  I-squared (variation in ES attributable to heterogeneity) =   0.0%
+  Estimate of between-study variance Tau-squared =  0.0000
+
+  Test of ES=1 : z=   0.60 p = 0.546
+
+. 
+end of do-file
+Log file metamisstest.log completed on  3 Jul 2018 at 18:36:31
+      name:  <unnamed>
+       log:  C:\Users\rmjwiww\Documents\metamisstest.log
+  log type:  text
+ closed on:   3 Jul 2018, 18:36:31
+-------------------------------------------------------------------------------------

@@ -4,6 +4,7 @@ Extended 11apr2022 to loop over all three measures
 Extended 27sep2018 to include simple tests under MAR and M=F
 */
 
+// PRELIMINARIES
 cd c:\ado\ian\metamiss
 set linesize 79
 cap log close
@@ -11,7 +12,10 @@ log using metamisstest.log, replace
 
 cscript metamiss
 which metamiss
+which metan
+di c(stata_version)
 
+// CREATE DATA
 clear
 input study r1 f1 m1 r2 f2 m2
 1 10 80 10 10 80 0
@@ -22,7 +26,9 @@ gen zero = 0
 gen fm1=f1+m1
 gen fm2=f2+m2
 
+// RUN TESTS
 foreach measure in rd rr or {
+
 // compare with metan under MAR
 dicmd metamiss r1 f1 zero r2 f2 zero, logimor(0) nograph `measure'
 local result_metamiss = r(ES)
@@ -61,6 +67,7 @@ local result1 = r(ES)
 dicmd metamiss2 r1 f1 m1 r2 f2 m2, impmean(-1) impsd(1) fixed metanopt(nograph) `measure'
 local result2 = r(ES)
 dicmd assert reldif(`result1', `result2') < 1E-8
+
 }
 
 // REPORT SUCCESS

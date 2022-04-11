@@ -2,7 +2,7 @@
       name:  <unnamed>
        log:  c:\ado\ian\metamiss\metamisstest.log
   log type:  text
- opened on:  11 Apr 2022, 09:40:58
+ opened on:  11 Apr 2022, 09:48:01
 
 . 
 . cscript metamiss
@@ -12,7 +12,17 @@
 .\metamiss.ado
 *! version 3.17  David Fisher 15feb2022
 
+. which metan
+N:\Home\ado\stbplus\m\metan.ado
+*! version 4.05  29nov2021
+*! Current version by David Fisher
+*! Previous versions by Ross Harris and Michael Bradburn
+
+. di c(stata_version)
+17
+
 . 
+. // CREATE DATA
 . clear
 
 . input study r1 f1 m1 r2 f2 m2
@@ -32,8 +42,10 @@
 . gen fm2=f2+m2
 
 . 
+. // RUN TESTS
 . foreach measure in rd rr or {
-  2. // compare with metan under MAR
+  2. 
+. // compare with metan under MAR
 . dicmd metamiss r1 f1 zero r2 f2 zero, logimor(0) nograph `measure'
   3. local result_metamiss = r(ES)
   4. dicmd metan r1 f1 r2 f2, nograph fixedi `measure'
@@ -77,7 +89,8 @@
 > raph) `measure'
  28. local result2 = r(ES)
  29. dicmd assert reldif(`result1', `result2') < 1E-8
- 30. }
+ 30. 
+. }
 metamiss r1 f1 zero r2 f2 zero, logimor(0) nograph rd
 *******************************************************************
 ******** METAMISS: meta-analysis allowing for missing data ********
@@ -1196,5 +1209,5 @@ assert reldif(1.310231927035086, 1.31023191363926) < 1E-8
       name:  <unnamed>
        log:  c:\ado\ian\metamiss\metamisstest.log
   log type:  text
- closed on:  11 Apr 2022, 09:40:59
+ closed on:  11 Apr 2022, 09:48:01
 -------------------------------------------------------------------------------

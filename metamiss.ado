@@ -1,6 +1,7 @@
 /*
-*! version 3.17  David Fisher 15feb2022
+*! version 3.17  11apr2022
 	handles new metan which returns results on log RR/OR scale
+	with thanks to David Fisher 15feb2022
 version 3.16  Ian White 02oct2018
 version 3.16  Ian White 02oct2018
 	corrected error message if called with no observations

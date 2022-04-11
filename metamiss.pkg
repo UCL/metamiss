@@ -1,8 +1,8 @@
 v 3
 d metamiss: Meta-analysis with missing data
 d Program by Ian White and Julian Higgins
-d Version 3.16
-d Distribution-Date: 20181002
+d Version 3.17
+d Distribution-Date: 20220411
 
 * Main callable files
 f metamiss.ado

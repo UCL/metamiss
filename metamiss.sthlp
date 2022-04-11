@@ -1,6 +1,6 @@
 {smcl}
+{* updated 11apr2022}{* Ian White}{...}
 {* 7sep2007}{* Ian White}{...}
-{* updated 02oct2018}{* Ian White}{...}
 {hline}
 {cmd:help metamiss}
 {hline}
@@ -258,7 +258,7 @@ estimate ESTSTAR_{it:measure}, and the corrected variance VARSTAR_{it:measure}.
 
 We analyse the haloperidol data as in {help metamiss##citethis:White and Higgins (2009)}.
 
-{phang}{stata use haloperidol}
+{phang}{stata use haloperidol, clear}
 
 The data set contains the key variables: author r1 f1 m1 r2 f2 m2
 
@@ -320,10 +320,13 @@ only does this for 3 studies with r2+m2==0.
 
 {title:Authors}
 
-{pstd}Ian White and Julian Higgins, MRC Biostatistics Unit, Institute of Public Health,
-Robinson Way, Cambridge CB2 0SR, UK. 
+{pstd}Ian White, MRC Clinical Trials Unit at UCL, London, UK. 
+
+{pstd}Julian Higgins, School of Social and Community Medicine, University of Bristol, UK.
 
 {pstd}For assistance please email {browse "mailto:ian.white@ucl.ac.uk":ian.white@ucl.ac.uk}.
+
+{pstd}We thank David Fisher for help in making this version compatible with version 4 of {cmd:metan}.
 
 
 {title:References}

@@ -70,6 +70,9 @@ dicmd assert reldif(`result1', `result2') < 1E-8
 
 }
 
+// check help file
+runhelpfile using metamiss.sthlp
+
 // REPORT SUCCESS
 di as result _n "*****************************************" ///
 	_n "*** METAMISS HAS PASSED ALL ITS TESTS ***" ///

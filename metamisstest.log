@@ -1,26 +1,701 @@
--------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
       name:  <unnamed>
-       log:  C:\Users\rmjwiww\Documents\metamisstest.log
+       log:  c:\ado\ian\metamiss\metamisstest.log
   log type:  text
- opened on:   3 Jul 2018, 18:36:31
-Log file metamisstest.log opened on  3 Jul 2018 at 18:36:31
+ opened on:  11 Apr 2022, 09:40:58
 
-. cd C:\Users\rmjwiww\Documents
-C:\Users\rmjwiww\Documents
+. 
+. cscript metamiss
+-----------------------------------------------------------------BEGIN metamiss
 
+. which metamiss
+.\metamiss.ado
+*! version 3.17  David Fisher 15feb2022
+
+. 
 . clear
 
 . input study r1 f1 m1 r2 f2 m2
 
-         study         r1         f1         m1         r2         f2         m2
+         study         r1         f1         m1         r2         f2         m
+> 2
   1. 1 10 80 10 10 80 0
   2. 2 20 70 10 10 50 40
   3. end
 
 . gen logimor=_n
 
+. gen zero = 0
+
+. gen fm1=f1+m1
+
+. gen fm2=f2+m2
+
 . 
-. metamiss r1 f1 m1 r2 f2 m2, logimor(1) nograph
+. foreach measure in rd rr or {
+  2. // compare with metan under MAR
+. dicmd metamiss r1 f1 zero r2 f2 zero, logimor(0) nograph `measure'
+  3. local result_metamiss = r(ES)
+  4. dicmd metan r1 f1 r2 f2, nograph fixedi `measure'
+  5. local result_metan = r(ES)
+  6. assert float(`result_metamiss') == float(`result_metan')
+  7. 
+. // compare with metan under M=F
+. dicmd metamiss r1 f1 m1 r2 f2 m2, imor(0) nograph `measure'
+  8. local result_metamiss = r(ES)
+  9. dicmd metan r1 fm1 r2 fm2, nograph fixedi `measure'
+ 10. local result_metan = r(ES)
+ 11. assert float(`result_metamiss') == float(`result_metan')
+ 12. 
+. // compare opposite ways round
+. dicmd metamiss r1 f1 m1 r2 f2 m2, imor(1 2) sdlogimor(.2 .4) nograph `measure
+> '
+ 13. local result_metamiss = r(ES)
+ 14. dicmd metamiss r2 f2 m2 r1 f1 m1, imor(2 1) sdlogimor(.4 .2) nograph `meas
+> ure'
+ 15. if "`measure'" == "rd" local result_metan = -r(ES)
+ 16. else local result_metan = 1/r(ES)
+ 17. assert reldif(`result_metamiss', `result_metan') < 1E-8
+ 18.  
+. // check error message
+. dicmd cap noi metamiss r1 f1 m1 r2 f2 m2, imor(logimor) sdlogimor(.2 .4) nogr
+> aph `measure'
+ 19. assert _rc==498
+ 20. 
+. // compare with metamiss2
+. dicmd metamiss r1 f1 m1 r2 f2 m2, logimor(1) nograph  `measure'
+ 21. local result1 = r(ES)
+ 22. dicmd metamiss2 r1 f1 m1 r2 f2 m2, impmean(1) fixed metanopt(nograph) `mea
+> sure'
+ 23. local result2 = r(ES)
+ 24. dicmd assert reldif(`result1', `result2') < 1E-8
+ 25. 
+. dicmd metamiss r1 f1 m1 r2 f2 m2, logimor(-1) sdlogimor(1) nograph method(Tay
+> lor) `measure'
+ 26. local result1 = r(ES)
+ 27. dicmd metamiss2 r1 f1 m1 r2 f2 m2, impmean(-1) impsd(1) fixed metanopt(nog
+> raph) `measure'
+ 28. local result2 = r(ES)
+ 29. dicmd assert reldif(`result1', `result2') < 1E-8
+ 30. }
+metamiss r1 f1 zero r2 f2 zero, logimor(0) nograph rd
+*******************************************************************
+******** METAMISS: meta-analysis allowing for missing data ********
+********                  Simple imputation                ********
+*******************************************************************
+Measure: RD.
+Method: ICA-IMOR (impute using IMORs 1 1).
+Weighting scheme: w4.
+
+(Calling metan with options:    nograph ...)
+
+Studies included: 2
+Participants included: Unknown
+
+Meta-analysis pooling of aggregate data
+using the common-effect inverse-variance model
+
+--------------------------------------------------------------------
+Study                |     RD      [95% Conf. Interval]   % Weight
+---------------------+----------------------------------------------
+1                    |     0.000     -0.092     0.092      65.87
+2                    |     0.056     -0.072     0.183      34.13
+---------------------+----------------------------------------------
+Overall, IV          |     0.019     -0.056     0.093     100.00
+--------------------------------------------------------------------
+
+Test of overall effect = 0:  z =   0.499  p = 0.618
+
+
+Heterogeneity measures, calculated from the data
+with Conf. Intervals based on non-central chi² (common-effect) distribution for
+>  Q
+---------------------------------------------------------
+Measure              |     Value      df      p-value
+---------------------+-----------------------------------
+Cochran's Q          |      0.48        1      0.488
+                     |            -[95% Conf. Interval]-
+H                    |     0.693     1.000     2.241
+I² (%)               |      0.0%      0.0%     80.1%
+---------------------------------------------------------
+H = relative excess in Cochran's Q over its degrees-of-freedom
+I² = proportion of total variation in effect estimate due to between-study hete
+> rogeneity (based on Q)
+metan r1 f1 r2 f2, nograph fixedi rd
+
+Studies included: 2
+Participants included: 330
+
+Meta-analysis pooling of  Risk Differences
+using the common-effect inverse-variance model
+
+--------------------------------------------------------------------
+Study                | Risk Diff.  [95% Conf. Interval]   % Weight
+---------------------+----------------------------------------------
+1                    |     0.000     -0.092     0.092      65.87
+2                    |     0.056     -0.072     0.183      34.13
+---------------------+----------------------------------------------
+Overall, IV          |     0.019     -0.056     0.093     100.00
+--------------------------------------------------------------------
+
+Test of overall effect = 0:  z =   0.499  p = 0.618
+
+
+Heterogeneity measures, calculated from the data
+with Conf. Intervals based on non-central chi² (common-effect) distribution for
+>  Q
+---------------------------------------------------------
+Measure              |     Value      df      p-value
+---------------------+-----------------------------------
+Cochran's Q          |      0.48        1      0.488
+                     |            -[95% Conf. Interval]-
+H                    |     0.693     1.000     2.241
+I² (%)               |      0.0%      0.0%     80.1%
+---------------------------------------------------------
+H = relative excess in Cochran's Q over its degrees-of-freedom
+I² = proportion of total variation in effect estimate due to between-study hete
+> rogeneity (based on Q)
+metamiss r1 f1 m1 r2 f2 m2, imor(0) nograph rd
+*******************************************************************
+******** METAMISS: meta-analysis allowing for missing data ********
+********                  Simple imputation                ********
+*******************************************************************
+Measure: RD.
+Method: ICA-IMOR (impute using IMORs 0 0).
+Weighting scheme: w4.
+
+(Calling metan with options:    nograph ...)
+
+Studies included: 2
+Participants included: Unknown
+
+Meta-analysis pooling of aggregate data
+using the common-effect inverse-variance model
+
+--------------------------------------------------------------------
+Study                |     RD      [95% Conf. Interval]   % Weight
+---------------------+----------------------------------------------
+1                    |    -0.011     -0.099     0.076      55.59
+2                    |     0.100      0.002     0.198      44.41
+---------------------+----------------------------------------------
+Overall, IV          |     0.038     -0.027     0.104     100.00
+--------------------------------------------------------------------
+
+Test of overall effect = 0:  z =   1.147  p = 0.251
+
+
+Heterogeneity measures, calculated from the data
+with Conf. Intervals based on non-central chi² (common-effect) distribution for
+>  Q
+---------------------------------------------------------
+Measure              |     Value      df      p-value
+---------------------+-----------------------------------
+Cochran's Q          |      2.75        1      0.098
+                     |            -[95% Conf. Interval]-
+H                    |     1.657     1.000     3.281
+I² (%)               |     63.6%      0.0%     90.7%
+---------------------------------------------------------
+H = relative excess in Cochran's Q over its degrees-of-freedom
+I² = proportion of total variation in effect estimate due to between-study hete
+> rogeneity (based on Q)
+metan r1 fm1 r2 fm2, nograph fixedi rd
+
+Studies included: 2
+Participants included: 390
+
+Meta-analysis pooling of  Risk Differences
+using the common-effect inverse-variance model
+
+--------------------------------------------------------------------
+Study                | Risk Diff.  [95% Conf. Interval]   % Weight
+---------------------+----------------------------------------------
+1                    |    -0.011     -0.099     0.076      55.59
+2                    |     0.100      0.002     0.198      44.41
+---------------------+----------------------------------------------
+Overall, IV          |     0.038     -0.027     0.104     100.00
+--------------------------------------------------------------------
+
+Test of overall effect = 0:  z =   1.147  p = 0.251
+
+
+Heterogeneity measures, calculated from the data
+with Conf. Intervals based on non-central chi² (common-effect) distribution for
+>  Q
+---------------------------------------------------------
+Measure              |     Value      df      p-value
+---------------------+-----------------------------------
+Cochran's Q          |      2.75        1      0.098
+                     |            -[95% Conf. Interval]-
+H                    |     1.657     1.000     3.281
+I² (%)               |     63.6%      0.0%     90.7%
+---------------------------------------------------------
+H = relative excess in Cochran's Q over its degrees-of-freedom
+I² = proportion of total variation in effect estimate due to between-study hete
+> rogeneity (based on Q)
+metamiss r1 f1 m1 r2 f2 m2, imor(1 2) sdlogimor(.2 .4) nograph rd
+*******************************************************************
+******** METAMISS: meta-analysis allowing for missing data ********
+********           Bayesian analysis using priors          ********
+*******************************************************************
+Measure: RD.
+Priors used:  Group 1: N(0,.2^2). Group 2: N(.6931471805599453,.4^2). Correlati
+> on: 0.
+Method: Gauss-Hermite quadrature (10 integration points).
+
+(Calling metan with options:    nograph ...)
+
+Studies included: 2
+Participants included: Unknown
+
+Meta-analysis pooling of aggregate data
+using the common-effect inverse-variance model
+
+--------------------------------------------------------------------
+Study                |     RD      [95% Conf. Interval]   % Weight
+---------------------+----------------------------------------------
+1                    |     0.000     -0.092     0.092      74.04
+2                    |     0.005     -0.150     0.161      25.96
+---------------------+----------------------------------------------
+Overall, IV          |     0.002     -0.078     0.081     100.00
+--------------------------------------------------------------------
+
+Test of overall effect = 0:  z =   0.038  p = 0.970
+
+
+Heterogeneity measures, calculated from the data
+with Conf. Intervals based on non-central chi² (common-effect) distribution for
+>  Q
+---------------------------------------------------------
+Measure              |     Value      df      p-value
+---------------------+-----------------------------------
+Cochran's Q          |      0.00        1      0.954
+                     |            -[95% Conf. Interval]-
+H                    |     0.058     1.000     2.241
+I² (%)               |      0.0%      0.0%     80.1%
+---------------------------------------------------------
+H = relative excess in Cochran's Q over its degrees-of-freedom
+I² = proportion of total variation in effect estimate due to between-study hete
+> rogeneity (based on Q)
+metamiss r2 f2 m2 r1 f1 m1, imor(2 1) sdlogimor(.4 .2) nograph rd
+*******************************************************************
+******** METAMISS: meta-analysis allowing for missing data ********
+********           Bayesian analysis using priors          ********
+*******************************************************************
+Measure: RD.
+Priors used:  Group 1: N(.6931471805599453,.4^2). Group 2: N(0,.2^2). Correlati
+> on: 0.
+Method: Gauss-Hermite quadrature (10 integration points).
+
+(Calling metan with options:    nograph ...)
+
+Studies included: 2
+Participants included: Unknown
+
+Meta-analysis pooling of aggregate data
+using the common-effect inverse-variance model
+
+--------------------------------------------------------------------
+Study                |     RD      [95% Conf. Interval]   % Weight
+---------------------+----------------------------------------------
+1                    |    -0.000     -0.092     0.092      74.04
+2                    |    -0.005     -0.161     0.150      25.96
+---------------------+----------------------------------------------
+Overall, IV          |    -0.002     -0.081     0.078     100.00
+--------------------------------------------------------------------
+
+Test of overall effect = 0:  z =  -0.038  p = 0.970
+
+
+Heterogeneity measures, calculated from the data
+with Conf. Intervals based on non-central chi² (common-effect) distribution for
+>  Q
+---------------------------------------------------------
+Measure              |     Value      df      p-value
+---------------------+-----------------------------------
+Cochran's Q          |      0.00        1      0.954
+                     |            -[95% Conf. Interval]-
+H                    |     0.058     1.000     2.241
+I² (%)               |      0.0%      0.0%     80.1%
+---------------------------------------------------------
+H = relative excess in Cochran's Q over its degrees-of-freedom
+I² = proportion of total variation in effect estimate due to between-study hete
+> rogeneity (based on Q)
+cap noi metamiss r1 f1 m1 r2 f2 m2, imor(logimor) sdlogimor(.2 .4) nograph rd
+*******************************************************************
+******** METAMISS: meta-analysis allowing for missing data ********
+********           Bayesian analysis using priors          ********
+*******************************************************************
+Measure: RD.
+Sorry, metamiss cannot at present handle imor() varying across individuals
+metamiss r1 f1 m1 r2 f2 m2, logimor(1) nograph rd
+*******************************************************************
+******** METAMISS: meta-analysis allowing for missing data ********
+********                  Simple imputation                ********
+*******************************************************************
+Measure: RD.
+Method: ICA-IMOR (impute using IMORs 2.718281828459045 2.718281828459045).
+Weighting scheme: w4.
+
+(Calling metan with options:    nograph ...)
+
+Studies included: 2
+Participants included: Unknown
+
+Meta-analysis pooling of aggregate data
+using the common-effect inverse-variance model
+
+--------------------------------------------------------------------
+Study                |     RD      [95% Conf. Interval]   % Weight
+---------------------+----------------------------------------------
+1                    |     0.014     -0.082     0.111      70.77
+2                    |     0.003     -0.147     0.153      29.23
+---------------------+----------------------------------------------
+Overall, IV          |     0.011     -0.070     0.092     100.00
+--------------------------------------------------------------------
+
+Test of overall effect = 0:  z =   0.264  p = 0.792
+
+
+Heterogeneity measures, calculated from the data
+with Conf. Intervals based on non-central chi² (common-effect) distribution for
+>  Q
+---------------------------------------------------------
+Measure              |     Value      df      p-value
+---------------------+-----------------------------------
+Cochran's Q          |      0.02        1      0.900
+                     |            -[95% Conf. Interval]-
+H                    |     0.125     1.000     2.241
+I² (%)               |      0.0%      0.0%     80.1%
+---------------------------------------------------------
+H = relative excess in Cochran's Q over its degrees-of-freedom
+I² = proportion of total variation in effect estimate due to between-study hete
+> rogeneity (based on Q)
+metamiss2 r1 f1 m1 r2 f2 m2, impmean(1) fixed metanopt(nograph) rd
+
+*******************************************************************
+******** METAMISS2: meta-analysis allowing for missing data *******
+********               IMP without uncertainty             ********
+*******************************************************************
+
+Informative missingness parameter: logIMOR
+Measure of interest:               Risk difference
+Method:                            Taylor series approximation
+Second stage model:                Fixed effect meta-analysis
+
+(Calling metan  ...)
+assert reldif(.0109151972537267, .0109151950965695) < 1E-8
+metamiss r1 f1 m1 r2 f2 m2, logimor(-1) sdlogimor(1) nograph method(Taylor) rd
+*******************************************************************
+******** METAMISS: meta-analysis allowing for missing data ********
+********           Bayesian analysis using priors          ********
+*******************************************************************
+Measure: RD.
+Priors used:  Group 1: N(-1,1^2). Group 2: N(-1,1^2). Correlation: 0.
+Method: Taylor series approximation.
+
+(Calling metan with options:    nograph ...)
+
+Studies included: 2
+Participants included: Unknown
+
+Meta-analysis pooling of aggregate data
+using the common-effect inverse-variance model
+
+--------------------------------------------------------------------
+Study                |     RD      [95% Conf. Interval]   % Weight
+---------------------+----------------------------------------------
+1                    |    -0.007     -0.096     0.083      65.17
+2                    |     0.082     -0.041     0.205      34.83
+---------------------+----------------------------------------------
+Overall, IV          |     0.024     -0.048     0.097     100.00
+--------------------------------------------------------------------
+
+Test of overall effect = 0:  z =   0.656  p = 0.512
+
+
+Heterogeneity measures, calculated from the data
+with Conf. Intervals based on non-central chi² (common-effect) distribution for
+>  Q
+---------------------------------------------------------
+Measure              |     Value      df      p-value
+---------------------+-----------------------------------
+Cochran's Q          |      1.31        1      0.252
+                     |            -[95% Conf. Interval]-
+H                    |     1.145     1.000     2.536
+I² (%)               |     23.8%      0.0%     84.4%
+---------------------------------------------------------
+H = relative excess in Cochran's Q over its degrees-of-freedom
+I² = proportion of total variation in effect estimate due to between-study hete
+> rogeneity (based on Q)
+metamiss2 r1 f1 m1 r2 f2 m2, impmean(-1) impsd(1) fixed metanopt(nograph) rd
+
+*******************************************************************
+******** METAMISS2: meta-analysis allowing for missing data *******
+********                IMP with uncertainty               ********
+*******************************************************************
+
+Informative missingness parameter: logIMOR
+Measure of interest:               Risk difference
+Priors used:                       Contol group ~ N(-1,1^2)
+Experimental group ~ N(-1,1^2)
+Prior correlation used:            0
+Method:                            Taylor series approximation
+Second stage model:                Fixed effect meta-analysis
+
+(Calling metan  ...)
+assert reldif(.024217073653398, .0242170766074421) < 1E-8
+metamiss r1 f1 zero r2 f2 zero, logimor(0) nograph rr
+*******************************************************************
+******** METAMISS: meta-analysis allowing for missing data ********
+********                  Simple imputation                ********
+*******************************************************************
+Measure: RR.
+Method: ICA-IMOR (impute using IMORs 1 1).
+Weighting scheme: w4.
+
+(Calling metan with options:   eform nograph ...)
+
+Studies included: 2
+Participants included: Unknown
+
+Meta-analysis pooling of aggregate data
+using the common-effect inverse-variance model
+
+--------------------------------------------------------------------
+Study                |     RR      [95% Conf. Interval]   % Weight
+---------------------+----------------------------------------------
+1                    |     1.000      0.438     2.285      40.74
+2                    |     1.333      0.672     2.646      59.26
+---------------------+----------------------------------------------
+Overall, IV          |     1.186      0.700     2.010     100.00
+--------------------------------------------------------------------
+
+Test of overall effect = 1:  z =   0.633  p = 0.526
+
+
+Heterogeneity measures, calculated from the data
+with Conf. Intervals based on non-central chi² (common-effect) distribution for
+>  Q
+---------------------------------------------------------
+Measure              |     Value      df      p-value
+---------------------+-----------------------------------
+Cochran's Q          |      0.28        1      0.599
+                     |            -[95% Conf. Interval]-
+H                    |     0.525     1.000     2.241
+I² (%)               |      0.0%      0.0%     80.1%
+---------------------------------------------------------
+H = relative excess in Cochran's Q over its degrees-of-freedom
+I² = proportion of total variation in effect estimate due to between-study hete
+> rogeneity (based on Q)
+metan r1 f1 r2 f2, nograph fixedi rr
+
+Studies included: 2
+Participants included: 330
+
+Meta-analysis pooling of Risk Ratios
+using the common-effect inverse-variance model
+
+--------------------------------------------------------------------
+                     |    Risk               
+Study                |    Ratio    [95% Conf. Interval]   % Weight
+---------------------+----------------------------------------------
+1                    |     1.000      0.438     2.285      40.74
+2                    |     1.333      0.672     2.646      59.26
+---------------------+----------------------------------------------
+Overall, IV          |     1.186      0.700     2.010     100.00
+--------------------------------------------------------------------
+
+Test of overall effect = 1:  z =   0.633  p = 0.526
+
+
+Heterogeneity measures, calculated from the data
+with Conf. Intervals based on non-central chi² (common-effect) distribution for
+>  Q
+---------------------------------------------------------
+Measure              |     Value      df      p-value
+---------------------+-----------------------------------
+Cochran's Q          |      0.28        1      0.599
+                     |            -[95% Conf. Interval]-
+H                    |     0.525     1.000     2.241
+I² (%)               |      0.0%      0.0%     80.1%
+---------------------------------------------------------
+H = relative excess in Cochran's Q over its degrees-of-freedom
+I² = proportion of total variation in effect estimate due to between-study hete
+> rogeneity (based on Q)
+metamiss r1 f1 m1 r2 f2 m2, imor(0) nograph rr
+*******************************************************************
+******** METAMISS: meta-analysis allowing for missing data ********
+********                  Simple imputation                ********
+*******************************************************************
+Measure: RR.
+Method: ICA-IMOR (impute using IMORs 0 0).
+Weighting scheme: w4.
+
+(Calling metan with options:   eform nograph ...)
+
+Studies included: 2
+Participants included: Unknown
+
+Meta-analysis pooling of aggregate data
+using the common-effect inverse-variance model
+
+--------------------------------------------------------------------
+Study                |     RR      [95% Conf. Interval]   % Weight
+---------------------+----------------------------------------------
+1                    |     0.900      0.393     2.062      42.09
+2                    |     2.000      0.987     4.054      57.91
+---------------------+----------------------------------------------
+Overall, IV          |     1.429      0.835     2.447     100.00
+--------------------------------------------------------------------
+
+Test of overall effect = 1:  z =   1.301  p = 0.193
+
+
+Heterogeneity measures, calculated from the data
+with Conf. Intervals based on non-central chi² (common-effect) distribution for
+>  Q
+---------------------------------------------------------
+Measure              |     Value      df      p-value
+---------------------+-----------------------------------
+Cochran's Q          |      2.06        1      0.151
+                     |            -[95% Conf. Interval]-
+H                    |     1.437     1.000     2.992
+I² (%)               |     51.6%      0.0%     88.8%
+---------------------------------------------------------
+H = relative excess in Cochran's Q over its degrees-of-freedom
+I² = proportion of total variation in effect estimate due to between-study hete
+> rogeneity (based on Q)
+metan r1 fm1 r2 fm2, nograph fixedi rr
+
+Studies included: 2
+Participants included: 390
+
+Meta-analysis pooling of Risk Ratios
+using the common-effect inverse-variance model
+
+--------------------------------------------------------------------
+                     |    Risk               
+Study                |    Ratio    [95% Conf. Interval]   % Weight
+---------------------+----------------------------------------------
+1                    |     0.900      0.393     2.062      42.09
+2                    |     2.000      0.987     4.054      57.91
+---------------------+----------------------------------------------
+Overall, IV          |     1.429      0.835     2.447     100.00
+--------------------------------------------------------------------
+
+Test of overall effect = 1:  z =   1.301  p = 0.193
+
+
+Heterogeneity measures, calculated from the data
+with Conf. Intervals based on non-central chi² (common-effect) distribution for
+>  Q
+---------------------------------------------------------
+Measure              |     Value      df      p-value
+---------------------+-----------------------------------
+Cochran's Q          |      2.06        1      0.151
+                     |            -[95% Conf. Interval]-
+H                    |     1.437     1.000     2.992
+I² (%)               |     51.6%      0.0%     88.8%
+---------------------------------------------------------
+H = relative excess in Cochran's Q over its degrees-of-freedom
+I² = proportion of total variation in effect estimate due to between-study hete
+> rogeneity (based on Q)
+metamiss r1 f1 m1 r2 f2 m2, imor(1 2) sdlogimor(.2 .4) nograph rr
+*******************************************************************
+******** METAMISS: meta-analysis allowing for missing data ********
+********           Bayesian analysis using priors          ********
+*******************************************************************
+Measure: RR.
+Priors used:  Group 1: N(0,.2^2). Group 2: N(.6931471805599453,.4^2). Correlati
+> on: 0.
+Method: Gauss-Hermite quadrature (10 integration points).
+
+(Calling metan with options:   eform nograph ...)
+
+Studies included: 2
+Participants included: Unknown
+
+Meta-analysis pooling of aggregate data
+using the common-effect inverse-variance model
+
+--------------------------------------------------------------------
+Study                |     RR      [95% Conf. Interval]   % Weight
+---------------------+----------------------------------------------
+1                    |     1.001      0.438     2.290      42.71
+2                    |     1.036      0.507     2.117      57.29
+---------------------+----------------------------------------------
+Overall, IV          |     1.021      0.595     1.753     100.00
+--------------------------------------------------------------------
+
+Test of overall effect = 1:  z =   0.076  p = 0.939
+
+
+Heterogeneity measures, calculated from the data
+with Conf. Intervals based on non-central chi² (common-effect) distribution for
+>  Q
+---------------------------------------------------------
+Measure              |     Value      df      p-value
+---------------------+-----------------------------------
+Cochran's Q          |      0.00        1      0.951
+                     |            -[95% Conf. Interval]-
+H                    |     0.062     1.000     2.241
+I² (%)               |      0.0%      0.0%     80.1%
+---------------------------------------------------------
+H = relative excess in Cochran's Q over its degrees-of-freedom
+I² = proportion of total variation in effect estimate due to between-study hete
+> rogeneity (based on Q)
+metamiss r2 f2 m2 r1 f1 m1, imor(2 1) sdlogimor(.4 .2) nograph rr
+*******************************************************************
+******** METAMISS: meta-analysis allowing for missing data ********
+********           Bayesian analysis using priors          ********
+*******************************************************************
+Measure: RR.
+Priors used:  Group 1: N(.6931471805599453,.4^2). Group 2: N(0,.2^2). Correlati
+> on: 0.
+Method: Gauss-Hermite quadrature (10 integration points).
+
+(Calling metan with options:   eform nograph ...)
+
+Studies included: 2
+Participants included: Unknown
+
+Meta-analysis pooling of aggregate data
+using the common-effect inverse-variance model
+
+--------------------------------------------------------------------
+Study                |     RR      [95% Conf. Interval]   % Weight
+---------------------+----------------------------------------------
+1                    |     0.999      0.437     2.284      42.71
+2                    |     0.965      0.472     1.971      57.29
+---------------------+----------------------------------------------
+Overall, IV          |     0.979      0.570     1.681     100.00
+--------------------------------------------------------------------
+
+Test of overall effect = 1:  z =  -0.076  p = 0.939
+
+
+Heterogeneity measures, calculated from the data
+with Conf. Intervals based on non-central chi² (common-effect) distribution for
+>  Q
+---------------------------------------------------------
+Measure              |     Value      df      p-value
+---------------------+-----------------------------------
+Cochran's Q          |      0.00        1      0.951
+                     |            -[95% Conf. Interval]-
+H                    |     0.062     1.000     2.241
+I² (%)               |      0.0%      0.0%     80.1%
+---------------------------------------------------------
+H = relative excess in Cochran's Q over its degrees-of-freedom
+I² = proportion of total variation in effect estimate due to between-study hete
+> rogeneity (based on Q)
+cap noi metamiss r1 f1 m1 r2 f2 m2, imor(logimor) sdlogimor(.2 .4) nograph rr
+*******************************************************************
+******** METAMISS: meta-analysis allowing for missing data ********
+********           Bayesian analysis using priors          ********
+*******************************************************************
+Measure: RR.
+Sorry, metamiss cannot at present handle imor() varying across individuals
+metamiss r1 f1 m1 r2 f2 m2, logimor(1) nograph rr
 *******************************************************************
 ******** METAMISS: meta-analysis allowing for missing data ********
 ********                  Simple imputation                ********
@@ -31,157 +706,495 @@ Weighting scheme: w4.
 
 (Calling metan with options:   eform nograph ...)
 
-           Study     |     ES    [95% Conf. Interval]     % Weight
----------------------+---------------------------------------------------
-1                    |  1.128       0.499     2.551         36.66
-2                    |  1.012       0.544     1.882         63.34
----------------------+---------------------------------------------------
-I-V pooled ES        |  1.053       0.643     1.726        100.00
----------------------+---------------------------------------------------
+Studies included: 2
+Participants included: Unknown
 
-  Heterogeneity chi-squared =   0.04 (d.f. = 1) p = 0.835
-  I-squared (variation in ES attributable to heterogeneity) =   0.0%
+Meta-analysis pooling of aggregate data
+using the common-effect inverse-variance model
 
-  Test of ES=1 : z=   0.20 p = 0.838
+--------------------------------------------------------------------
+Study                |     RR      [95% Conf. Interval]   % Weight
+---------------------+----------------------------------------------
+1                    |     1.128      0.499     2.551      36.66
+2                    |     1.012      0.544     1.882      63.34
+---------------------+----------------------------------------------
+Overall, IV          |     1.053      0.643     1.726     100.00
+--------------------------------------------------------------------
 
-. metamiss r1 f1 m1 r2 f2 m2, logimor(2) nograph
+Test of overall effect = 1:  z =   0.205  p = 0.838
+
+
+Heterogeneity measures, calculated from the data
+with Conf. Intervals based on non-central chi² (common-effect) distribution for
+>  Q
+---------------------------------------------------------
+Measure              |     Value      df      p-value
+---------------------+-----------------------------------
+Cochran's Q          |      0.04        1      0.835
+                     |            -[95% Conf. Interval]-
+H                    |     0.208     1.000     2.241
+I² (%)               |      0.0%      0.0%     80.1%
+---------------------------------------------------------
+H = relative excess in Cochran's Q over its degrees-of-freedom
+I² = proportion of total variation in effect estimate due to between-study hete
+> rogeneity (based on Q)
+metamiss2 r1 f1 m1 r2 f2 m2, impmean(1) fixed metanopt(nograph) rr
+
+*******************************************************************
+******** METAMISS2: meta-analysis allowing for missing data *******
+********               IMP without uncertainty             ********
+*******************************************************************
+
+Informative missingness parameter: logIMOR
+Measure of interest:               Risk ratio
+Method:                            Taylor series approximation
+Second stage model:                Fixed effect meta-analysis
+
+(Calling metan  ...)
+assert reldif(1.053021143819455, 1.053021133440941) < 1E-8
+metamiss r1 f1 m1 r2 f2 m2, logimor(-1) sdlogimor(1) nograph method(Taylor) rr
+*******************************************************************
+******** METAMISS: meta-analysis allowing for missing data ********
+********           Bayesian analysis using priors          ********
+*******************************************************************
+Measure: RR.
+Priors used:  Group 1: N(-1,1^2). Group 2: N(-1,1^2). Correlation: 0.
+Method: Taylor series approximation.
+
+(Calling metan with options:   eform nograph ...)
+
+Studies included: 2
+Participants included: Unknown
+
+Meta-analysis pooling of aggregate data
+using the common-effect inverse-variance model
+
+--------------------------------------------------------------------
+Study                |     RR      [95% Conf. Interval]   % Weight
+---------------------+----------------------------------------------
+1                    |     0.940      0.409     2.159      46.06
+2                    |     1.644      0.762     3.547      53.94
+---------------------+----------------------------------------------
+Overall, IV          |     1.271      0.723     2.235     100.00
+--------------------------------------------------------------------
+
+Test of overall effect = 1:  z =   0.832  p = 0.406
+
+
+Heterogeneity measures, calculated from the data
+with Conf. Intervals based on non-central chi² (common-effect) distribution for
+>  Q
+---------------------------------------------------------
+Measure              |     Value      df      p-value
+---------------------+-----------------------------------
+Cochran's Q          |      0.94        1      0.333
+                     |            -[95% Conf. Interval]-
+H                    |     0.968     1.000     2.241
+I² (%)               |      0.0%      0.0%     80.1%
+---------------------------------------------------------
+H = relative excess in Cochran's Q over its degrees-of-freedom
+I² = proportion of total variation in effect estimate due to between-study hete
+> rogeneity (based on Q)
+metamiss2 r1 f1 m1 r2 f2 m2, impmean(-1) impsd(1) fixed metanopt(nograph) rr
+
+*******************************************************************
+******** METAMISS2: meta-analysis allowing for missing data *******
+********                IMP with uncertainty               ********
+*******************************************************************
+
+Informative missingness parameter: logIMOR
+Measure of interest:               Risk ratio
+Priors used:                       Contol group ~ N(-1,1^2)
+Experimental group ~ N(-1,1^2)
+Prior correlation used:            0
+Method:                            Taylor series approximation
+Second stage model:                Fixed effect meta-analysis
+
+(Calling metan  ...)
+assert reldif(1.270709772899861, 1.270709768411845) < 1E-8
+metamiss r1 f1 zero r2 f2 zero, logimor(0) nograph or
 *******************************************************************
 ******** METAMISS: meta-analysis allowing for missing data ********
 ********                  Simple imputation                ********
 *******************************************************************
-Measure: RR.
-Method: ICA-IMOR (impute using IMORs 7.38905609893065 7.38905609893065).
+Measure: OR.
+Method: ICA-IMOR (impute using IMORs 1 1).
 Weighting scheme: w4.
 
 (Calling metan with options:   eform nograph ...)
 
-           Study     |     ES    [95% Conf. Interval]     % Weight
----------------------+---------------------------------------------------
-1                    |  1.332       0.607     2.925         29.82
-2                    |  0.791       0.474     1.321         70.18
----------------------+---------------------------------------------------
-I-V pooled ES        |  0.924       0.601     1.420        100.00
----------------------+---------------------------------------------------
+Studies included: 2
+Participants included: Unknown
 
-  Heterogeneity chi-squared =   1.18 (d.f. = 1) p = 0.277
-  I-squared (variation in ES attributable to heterogeneity) =  15.5%
+Meta-analysis pooling of aggregate data
+using the common-effect inverse-variance model
 
-  Test of ES=1 : z=   0.36 p = 0.719
+--------------------------------------------------------------------
+Study                |     OR      [95% Conf. Interval]   % Weight
+---------------------+----------------------------------------------
+1                    |     1.000      0.395     2.534      45.03
+2                    |     1.429      0.616     3.314      54.97
+---------------------+----------------------------------------------
+Overall, IV          |     1.217      0.652     2.270     100.00
+--------------------------------------------------------------------
 
-. metamiss r1 f1 m1 r2 f2 m2, logimor(logimor) nograph
+Test of overall effect = 1:  z =   0.616  p = 0.538
+
+
+Heterogeneity measures, calculated from the data
+with Conf. Intervals based on non-central chi² (common-effect) distribution for
+>  Q
+---------------------------------------------------------
+Measure              |     Value      df      p-value
+---------------------+-----------------------------------
+Cochran's Q          |      0.31        1      0.577
+                     |            -[95% Conf. Interval]-
+H                    |     0.558     1.000     2.241
+I² (%)               |      0.0%      0.0%     80.1%
+---------------------------------------------------------
+H = relative excess in Cochran's Q over its degrees-of-freedom
+I² = proportion of total variation in effect estimate due to between-study hete
+> rogeneity (based on Q)
+metan r1 f1 r2 f2, nograph fixedi or
+
+Studies included: 2
+Participants included: 330
+
+Meta-analysis pooling of Odds Ratios
+using the common-effect inverse-variance model
+
+--------------------------------------------------------------------
+                     |    Odds               
+Study                |    ratio    [95% Conf. Interval]   % Weight
+---------------------+----------------------------------------------
+1                    |     1.000      0.395     2.534      45.03
+2                    |     1.429      0.616     3.314      54.97
+---------------------+----------------------------------------------
+Overall, IV          |     1.217      0.652     2.270     100.00
+--------------------------------------------------------------------
+
+Test of overall effect = 1:  z =   0.616  p = 0.538
+
+
+Heterogeneity measures, calculated from the data
+with Conf. Intervals based on non-central chi² (common-effect) distribution for
+>  Q
+---------------------------------------------------------
+Measure              |     Value      df      p-value
+---------------------+-----------------------------------
+Cochran's Q          |      0.31        1      0.577
+                     |            -[95% Conf. Interval]-
+H                    |     0.558     1.000     2.241
+I² (%)               |      0.0%      0.0%     80.1%
+---------------------------------------------------------
+H = relative excess in Cochran's Q over its degrees-of-freedom
+I² = proportion of total variation in effect estimate due to between-study hete
+> rogeneity (based on Q)
+metamiss r1 f1 m1 r2 f2 m2, imor(0) nograph or
 *******************************************************************
 ******** METAMISS: meta-analysis allowing for missing data ********
 ********                  Simple imputation                ********
 *******************************************************************
-Measure: RR.
+Measure: OR.
+Method: ICA-IMOR (impute using IMORs 0 0).
+Weighting scheme: w4.
+
+(Calling metan with options:   eform nograph ...)
+
+Studies included: 2
+Participants included: Unknown
+
+Meta-analysis pooling of aggregate data
+using the common-effect inverse-variance model
+
+--------------------------------------------------------------------
+Study                |     OR      [95% Conf. Interval]   % Weight
+---------------------+----------------------------------------------
+1                    |     0.889      0.352     2.246      43.71
+2                    |     2.250      0.994     5.092      56.29
+---------------------+----------------------------------------------
+Overall, IV          |     1.499      0.812     2.767     100.00
+--------------------------------------------------------------------
+
+Test of overall effect = 1:  z =   1.296  p = 0.195
+
+
+Heterogeneity measures, calculated from the data
+with Conf. Intervals based on non-central chi² (common-effect) distribution for
+>  Q
+---------------------------------------------------------
+Measure              |     Value      df      p-value
+---------------------+-----------------------------------
+Cochran's Q          |      2.17        1      0.141
+                     |            -[95% Conf. Interval]-
+H                    |     1.474     1.000     3.043
+I² (%)               |     53.9%      0.0%     89.2%
+---------------------------------------------------------
+H = relative excess in Cochran's Q over its degrees-of-freedom
+I² = proportion of total variation in effect estimate due to between-study hete
+> rogeneity (based on Q)
+metan r1 fm1 r2 fm2, nograph fixedi or
+
+Studies included: 2
+Participants included: 390
+
+Meta-analysis pooling of Odds Ratios
+using the common-effect inverse-variance model
+
+--------------------------------------------------------------------
+                     |    Odds               
+Study                |    ratio    [95% Conf. Interval]   % Weight
+---------------------+----------------------------------------------
+1                    |     0.889      0.352     2.246      43.71
+2                    |     2.250      0.994     5.092      56.29
+---------------------+----------------------------------------------
+Overall, IV          |     1.499      0.812     2.767     100.00
+--------------------------------------------------------------------
+
+Test of overall effect = 1:  z =   1.296  p = 0.195
+
+
+Heterogeneity measures, calculated from the data
+with Conf. Intervals based on non-central chi² (common-effect) distribution for
+>  Q
+---------------------------------------------------------
+Measure              |     Value      df      p-value
+---------------------+-----------------------------------
+Cochran's Q          |      2.17        1      0.141
+                     |            -[95% Conf. Interval]-
+H                    |     1.474     1.000     3.043
+I² (%)               |     53.9%      0.0%     89.2%
+---------------------------------------------------------
+H = relative excess in Cochran's Q over its degrees-of-freedom
+I² = proportion of total variation in effect estimate due to between-study hete
+> rogeneity (based on Q)
+metamiss r1 f1 m1 r2 f2 m2, imor(1 2) sdlogimor(.2 .4) nograph or
+*******************************************************************
+******** METAMISS: meta-analysis allowing for missing data ********
+********           Bayesian analysis using priors          ********
+*******************************************************************
+Measure: OR.
+Priors used:  Group 1: N(0,.2^2). Group 2: N(.6931471805599453,.4^2). Correlati
+> on: 0.
+Method: Gauss-Hermite quadrature (10 integration points).
+
+(Calling metan with options:   eform nograph ...)
+
+Studies included: 2
+Participants included: Unknown
+
+Meta-analysis pooling of aggregate data
+using the common-effect inverse-variance model
+
+--------------------------------------------------------------------
+Study                |     OR      [95% Conf. Interval]   % Weight
+---------------------+----------------------------------------------
+1                    |     1.001      0.395     2.539      49.03
+2                    |     1.043      0.419     2.597      50.97
+---------------------+----------------------------------------------
+Overall, IV          |     1.022      0.533     1.961     100.00
+--------------------------------------------------------------------
+
+Test of overall effect = 1:  z =   0.066  p = 0.947
+
+
+Heterogeneity measures, calculated from the data
+with Conf. Intervals based on non-central chi² (common-effect) distribution for
+>  Q
+---------------------------------------------------------
+Measure              |     Value      df      p-value
+---------------------+-----------------------------------
+Cochran's Q          |      0.00        1      0.951
+                     |            -[95% Conf. Interval]-
+H                    |     0.061     1.000     2.241
+I² (%)               |      0.0%      0.0%     80.1%
+---------------------------------------------------------
+H = relative excess in Cochran's Q over its degrees-of-freedom
+I² = proportion of total variation in effect estimate due to between-study hete
+> rogeneity (based on Q)
+metamiss r2 f2 m2 r1 f1 m1, imor(2 1) sdlogimor(.4 .2) nograph or
+*******************************************************************
+******** METAMISS: meta-analysis allowing for missing data ********
+********           Bayesian analysis using priors          ********
+*******************************************************************
+Measure: OR.
+Priors used:  Group 1: N(.6931471805599453,.4^2). Group 2: N(0,.2^2). Correlati
+> on: 0.
+Method: Gauss-Hermite quadrature (10 integration points).
+
+(Calling metan with options:   eform nograph ...)
+
+Studies included: 2
+Participants included: Unknown
+
+Meta-analysis pooling of aggregate data
+using the common-effect inverse-variance model
+
+--------------------------------------------------------------------
+Study                |     OR      [95% Conf. Interval]   % Weight
+---------------------+----------------------------------------------
+1                    |     0.999      0.394     2.532      49.03
+2                    |     0.959      0.385     2.389      50.97
+---------------------+----------------------------------------------
+Overall, IV          |     0.978      0.510     1.877     100.00
+--------------------------------------------------------------------
+
+Test of overall effect = 1:  z =  -0.066  p = 0.947
+
+
+Heterogeneity measures, calculated from the data
+with Conf. Intervals based on non-central chi² (common-effect) distribution for
+>  Q
+---------------------------------------------------------
+Measure              |     Value      df      p-value
+---------------------+-----------------------------------
+Cochran's Q          |      0.00        1      0.951
+                     |            -[95% Conf. Interval]-
+H                    |     0.061     1.000     2.241
+I² (%)               |      0.0%      0.0%     80.1%
+---------------------------------------------------------
+H = relative excess in Cochran's Q over its degrees-of-freedom
+I² = proportion of total variation in effect estimate due to between-study hete
+> rogeneity (based on Q)
+cap noi metamiss r1 f1 m1 r2 f2 m2, imor(logimor) sdlogimor(.2 .4) nograph or
+*******************************************************************
+******** METAMISS: meta-analysis allowing for missing data ********
+********           Bayesian analysis using priors          ********
+*******************************************************************
+Measure: OR.
+Sorry, metamiss cannot at present handle imor() varying across individuals
+metamiss r1 f1 m1 r2 f2 m2, logimor(1) nograph or
+*******************************************************************
+******** METAMISS: meta-analysis allowing for missing data ********
+********                  Simple imputation                ********
+*******************************************************************
+Measure: OR.
 Method: ICA-IMOR (impute using IMORs 2.718281828459045 2.718281828459045).
 Weighting scheme: w4.
 
 (Calling metan with options:   eform nograph ...)
 
-           Study     |     ES    [95% Conf. Interval]     % Weight
----------------------+---------------------------------------------------
-1                    |  1.128       0.499     2.551         36.66
-2                    |  1.012       0.544     1.882         63.34
----------------------+---------------------------------------------------
-I-V pooled ES        |  1.053       0.643     1.726        100.00
----------------------+---------------------------------------------------
+Studies included: 2
+Participants included: Unknown
 
-  Heterogeneity chi-squared =   0.04 (d.f. = 1) p = 0.835
-  I-squared (variation in ES attributable to heterogeneity) =   0.0%
+Meta-analysis pooling of aggregate data
+using the common-effect inverse-variance model
 
-  Test of ES=1 : z=   0.20 p = 0.838
+--------------------------------------------------------------------
+Study                |     OR      [95% Conf. Interval]   % Weight
+---------------------+----------------------------------------------
+1                    |     1.147      0.455     2.892      43.92
+2                    |     1.016      0.448     2.303      56.08
+---------------------+----------------------------------------------
+Overall, IV          |     1.071      0.580     1.978     100.00
+--------------------------------------------------------------------
+
+Test of overall effect = 1:  z =   0.220  p = 0.826
+
+
+Heterogeneity measures, calculated from the data
+with Conf. Intervals based on non-central chi² (common-effect) distribution for
+>  Q
+---------------------------------------------------------
+Measure              |     Value      df      p-value
+---------------------+-----------------------------------
+Cochran's Q          |      0.04        1      0.847
+                     |            -[95% Conf. Interval]-
+H                    |     0.193     1.000     2.241
+I² (%)               |      0.0%      0.0%     80.1%
+---------------------------------------------------------
+H = relative excess in Cochran's Q over its degrees-of-freedom
+I² = proportion of total variation in effect estimate due to between-study hete
+> rogeneity (based on Q)
+metamiss2 r1 f1 m1 r2 f2 m2, impmean(1) fixed metanopt(nograph) or
+
+*******************************************************************
+******** METAMISS2: meta-analysis allowing for missing data *******
+********               IMP without uncertainty             ********
+*******************************************************************
+
+Informative missingness parameter: logIMOR
+Measure of interest:               Odds ratio
+Method:                            Taylor series approximation
+Second stage model:                Fixed effect meta-analysis
+
+(Calling metan  ...)
+assert reldif(1.071193338991669, 1.071193324105557) < 1E-8
+metamiss r1 f1 m1 r2 f2 m2, logimor(-1) sdlogimor(1) nograph method(Taylor) or
+*******************************************************************
+******** METAMISS: meta-analysis allowing for missing data ********
+********           Bayesian analysis using priors          ********
+*******************************************************************
+Measure: OR.
+Priors used:  Group 1: N(-1,1^2). Group 2: N(-1,1^2). Correlation: 0.
+Method: Taylor series approximation.
+
+(Calling metan with options:   eform nograph ...)
+
+Studies included: 2
+Participants included: Unknown
+
+Meta-analysis pooling of aggregate data
+using the common-effect inverse-variance model
+
+--------------------------------------------------------------------
+Study                |     OR      [95% Conf. Interval]   % Weight
+---------------------+----------------------------------------------
+1                    |     0.933      0.367     2.369      48.94
+2                    |     1.815      0.729     4.522      51.06
+---------------------+----------------------------------------------
+Overall, IV          |     1.310      0.682     2.515     100.00
+--------------------------------------------------------------------
+
+Test of overall effect = 1:  z =   0.812  p = 0.417
+
+
+Heterogeneity measures, calculated from the data
+with Conf. Intervals based on non-central chi² (common-effect) distribution for
+>  Q
+---------------------------------------------------------
+Measure              |     Value      df      p-value
+---------------------+-----------------------------------
+Cochran's Q          |      1.00        1      0.317
+                     |            -[95% Conf. Interval]-
+H                    |     1.000     1.000     2.242
+I² (%)               |      0.1%      0.0%     80.1%
+---------------------------------------------------------
+H = relative excess in Cochran's Q over its degrees-of-freedom
+I² = proportion of total variation in effect estimate due to between-study hete
+> rogeneity (based on Q)
+metamiss2 r1 f1 m1 r2 f2 m2, impmean(-1) impsd(1) fixed metanopt(nograph) or
+
+*******************************************************************
+******** METAMISS2: meta-analysis allowing for missing data *******
+********                IMP with uncertainty               ********
+*******************************************************************
+
+Informative missingness parameter: logIMOR
+Measure of interest:               Odds ratio
+Priors used:                       Contol group ~ N(-1,1^2)
+Experimental group ~ N(-1,1^2)
+Prior correlation used:            0
+Method:                            Taylor series approximation
+Second stage model:                Fixed effect meta-analysis
+
+(Calling metan  ...)
+assert reldif(1.310231927035086, 1.31023191363926) < 1E-8
 
 . 
-. metamiss2 r1 f1 m1 r2 f2 m2, impmean(1) metanopt(nograph)
+. // REPORT SUCCESS
+. di as result _n "*****************************************" ///
+>         _n "*** METAMISS HAS PASSED ALL ITS TESTS ***" ///
+>         _n "*****************************************"
 
-*******************************************************************
-******** METAMISS2: meta-analysis allowing for missing data *******
-********               IMP without uncertainty             ********
-*******************************************************************
-
-Informative missingness parameter: logIMOR
-Measure of interest:               Risk ratio
-Method:                            Taylor series approximation
-Second stage model:                Random effects meta-analysis
-
-(Calling metan with options: nograph ...)
-
-           Study     |     ES    [95% Conf. Interval]     % Weight
----------------------+---------------------------------------------------
-1                    |  1.128       0.499     2.551         36.66
-2                    |  1.012       0.544     1.882         63.34
----------------------+---------------------------------------------------
-D+L pooled ES        |  1.053       0.643     1.726        100.00
----------------------+---------------------------------------------------
-
-  Heterogeneity chi-squared =   0.04 (d.f. = 1) p = 0.835
-  I-squared (variation in ES attributable to heterogeneity) =   0.0%
-  Estimate of between-study variance Tau-squared =  0.0000
-
-  Test of ES=1 : z=   0.20 p = 0.838
-
-. metamiss2 r1 f1 m1 r2 f2 m2, impmean(2) metanopt(nograph)
-
-*******************************************************************
-******** METAMISS2: meta-analysis allowing for missing data *******
-********               IMP without uncertainty             ********
-*******************************************************************
-
-Informative missingness parameter: logIMOR
-Measure of interest:               Risk ratio
-Method:                            Taylor series approximation
-Second stage model:                Random effects meta-analysis
-
-(Calling metan with options: nograph ...)
-
-           Study     |     ES    [95% Conf. Interval]     % Weight
----------------------+---------------------------------------------------
-1                    |  1.332       0.607     2.925         32.95
-2                    |  0.791       0.474     1.321         67.05
----------------------+---------------------------------------------------
-D+L pooled ES        |  0.939       0.581     1.518        100.00
----------------------+---------------------------------------------------
-
-  Heterogeneity chi-squared =   1.18 (d.f. = 1) p = 0.277
-  I-squared (variation in ES attributable to heterogeneity) =  15.5%
-  Estimate of between-study variance Tau-squared =  0.0210
-
-  Test of ES=1 : z=   0.26 p = 0.798
-
-. metamiss2 r1 f1 m1 r2 f2 m2, impmean(logimor) metanopt(nograph)
-
-*******************************************************************
-******** METAMISS2: meta-analysis allowing for missing data *******
-********               IMP without uncertainty             ********
-*******************************************************************
-
-Informative missingness parameter: logIMOR
-Measure of interest:               Risk ratio
-Method:                            Taylor series approximation
-Second stage model:                Random effects meta-analysis
-
-(Calling metan with options: nograph ...)
-
-           Study     |     ES    [95% Conf. Interval]     % Weight
----------------------+---------------------------------------------------
-1                    |  1.128       0.499     2.551         28.32
-2                    |  0.791       0.474     1.321         71.68
----------------------+---------------------------------------------------
-D+L pooled ES        |  0.875       0.567     1.350        100.00
----------------------+---------------------------------------------------
-
-  Heterogeneity chi-squared =   0.52 (d.f. = 1) p = 0.470
-  I-squared (variation in ES attributable to heterogeneity) =   0.0%
-  Estimate of between-study variance Tau-squared =  0.0000
-
-  Test of ES=1 : z=   0.60 p = 0.546
+*****************************************
+*** METAMISS HAS PASSED ALL ITS TESTS ***
+*****************************************
 
 . 
-end of do-file
-Log file metamisstest.log completed on  3 Jul 2018 at 18:36:31
+. log close
       name:  <unnamed>
-       log:  C:\Users\rmjwiww\Documents\metamisstest.log
+       log:  c:\ado\ian\metamiss\metamisstest.log
   log type:  text
- closed on:   3 Jul 2018, 18:36:31
--------------------------------------------------------------------------------------
+ closed on:  11 Apr 2022, 09:40:59
+-------------------------------------------------------------------------------

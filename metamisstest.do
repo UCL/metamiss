@@ -3,7 +3,12 @@ Test script for metamiss
 Extended 27sep2018 to include simple tests under MAR and M=F
 */
 
+cd c:\ado\ian\metamiss
+set linesize 79
+log using metamisstest.log, replace
+
 cscript metamiss
+which metamiss
 
 clear
 input study r1 f1 m1 r2 f2 m2
@@ -53,5 +58,9 @@ metamiss2 r1 f1 m1 r2 f2 m2, impmean(-1) impsd(1) fixed metanopt(nograph)
 local result2 = r(ES)
 assert float(`result1') == float(`result2')
 
-*** metamiss has passed these tests ***
+// REPORT SUCCESS
+di as result _n "*******************************************" ///
+	_n "*** MVMETAMISS HAS PASSED ALL ITS TESTS ***" ///
+	_n "*******************************************"
 
+log close

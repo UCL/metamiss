@@ -2,7 +2,9 @@
 
 # metamiss: Stata module to perform meta-analysis with missing data
 
-Author: Ian White
+Author: Ian White and Julian Higgins
+
+Maintainer: Ian White 
 
 Version: 3.17 
 

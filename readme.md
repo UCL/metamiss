@@ -12,4 +12,4 @@ Date: 11apr2022
 You should be able to install this package from SSC.
 
 To install it from github, use
-- `net from https://raw.githubusercontent.com/UCL/metamiss/developer/package/`
+- `net from https://raw.githubusercontent.com/UCL/metamiss/master/package/`

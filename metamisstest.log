@@ -1,16 +1,16 @@
 -------------------------------------------------------------------------------
       name:  <unnamed>
-       log:  c:\ado\ian\metamiss\metamisstest.log
+       log:  C:\ado\ian\metamiss\metamisstest.log
   log type:  text
- opened on:  11 Apr 2022, 15:36:51
+ opened on:  12 May 2022, 11:11:01
 
 . 
 . cscript metamiss
 -----------------------------------------------------------------BEGIN metamiss
 
 . which metamiss
-c:\ado\ian\metamiss\metamiss.ado
-*! version 3.17  15feb2022
+.\metamiss.ado
+*! version 3.17  11apr2022
 
 . which metan
 N:\Home\ado\stbplus\m\metan.ado
@@ -20,6 +20,8 @@ N:\Home\ado\stbplus\m\metan.ado
 
 . di c(stata_version)
 17
+
+. set seed 3467145
 
 . 
 . // CREATE DATA
@@ -1936,28 +1938,28 @@ using the common-effect inverse-variance model
 --------------------------------------------------------------------
 author               |    logRR    [95% Conf. Interval]   % Weight
 ---------------------+----------------------------------------------
-Arvantis             |     1.405      0.881     2.239      19.62
-Beasley              |     1.069      0.722     1.580      27.85
-Bechelli             |     4.991      1.433    17.374       2.74
-Borison_92           |     3.882      0.528    28.566       1.07
-Chouinard            |     3.132      1.080     9.083       3.76
-Durost               |     5.974      1.270    28.099       1.78
-Garry                |     1.655      0.592     4.629       4.03
-Howard               |     1.871      0.671     5.218       4.06
-Mander               |     1.349      0.758     2.401      12.82
-Nishikawa_82         |     1.980      0.218    18.013       0.88
-Nishikawa_84         |     4.924      0.745    32.545       1.20
-Reschke              |     3.313      1.069    10.261       3.34
-Selman               |     1.524      0.834     2.786      11.73
-Serafetinides        |     4.412      0.623    31.269       1.11
-Simpson              |     1.477      0.186    11.744       0.99
-Spencer              |     7.458      1.639    33.938       1.86
-Vichaiya             |     9.502      1.393    64.839       1.16
+Arvantis             |     1.405      0.883     2.235      19.72
+Beasley              |     1.064      0.719     1.576      27.59
+Bechelli             |     5.111      1.449    18.023       2.68
+Borison_92           |     3.765      0.520    27.236       1.09
+Chouinard            |     3.094      1.078     8.879       3.83
+Durost               |     6.015      1.261    28.698       1.74
+Garry                |     1.663      0.600     4.610       4.09
+Howard               |     1.893      0.684     5.238       4.10
+Mander               |     1.340      0.751     2.390      12.69
+Nishikawa_82         |     1.940      0.218    17.250       0.89
+Nishikawa_84         |     4.817      0.744    31.197       1.22
+Reschke              |     3.298      1.056    10.301       3.28
+Selman               |     1.530      0.841     2.784      11.88
+Serafetinides        |     4.483      0.630    31.909       1.10
+Simpson              |     1.437      0.183    11.315       1.00
+Spencer              |     7.435      1.666    33.183       1.90
+Vichaiya             |     9.402      1.436    61.556       1.20
 ---------------------+----------------------------------------------
-Overall, IV          |     1.650      1.342     2.029     100.00
+Overall, IV          |     1.650      1.343     2.028     100.00
 --------------------------------------------------------------------
 
-Test of overall effect = 1:  z =   4.752  p = 0.000
+Test of overall effect = 1:  z =   4.761  p = 0.000
 
 
 Heterogeneity measures, calculated from the data
@@ -1966,10 +1968,10 @@ with Conf. Intervals based on non-central chi² (common-effect) distribution for
 ---------------------------------------------------------
 Measure              |     Value      df      p-value
 ---------------------+-----------------------------------
-Cochran's Q          |     24.31       16      0.083
+Cochran's Q          |     24.54       16      0.078
                      |            -[95% Conf. Interval]-
-H                    |     1.233     1.000     1.627
-I² (%)               |     34.2%      0.0%     62.2%
+H                    |     1.238     1.000     1.634
+I² (%)               |     34.8%      0.0%     62.5%
 ---------------------------------------------------------
 H = relative excess in Cochran's Q over its degrees-of-freedom
 I² = proportion of total variation in effect estimate due to between-study hete
@@ -2048,7 +2050,7 @@ I² = proportion of total variation in effect estimate due to between-study hete
 . 
 . log close
       name:  <unnamed>
-       log:  c:\ado\ian\metamiss\metamisstest.log
+       log:  C:\ado\ian\metamiss\metamisstest.log
   log type:  text
- closed on:  11 Apr 2022, 15:37:15
+ closed on:  12 May 2022, 11:11:28
 -------------------------------------------------------------------------------

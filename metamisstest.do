@@ -1,10 +1,17 @@
 /*
 Test script for metamiss
+Added dicmd 12/5/2022
+Set seed for reproducibility 12/5/2022
 Extended 11apr2022 to loop over all three measures
 Extended 27sep2018 to include simple tests under MAR and M=F
 */
 
 // PRELIMINARIES
+prog def dicmd
+noi di as input `"`0'"'
+`0'
+end
+
 cd c:\ado\ian\metamiss
 set linesize 79
 cap log close
@@ -14,6 +21,7 @@ cscript metamiss
 which metamiss
 which metan
 di c(stata_version)
+set seed 3467145
 
 // CREATE DATA
 clear

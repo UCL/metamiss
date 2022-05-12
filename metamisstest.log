@@ -1,8 +1,8 @@
 -------------------------------------------------------------------------------
       name:  <unnamed>
-       log:  C:\ado\ian\metamiss\metamisstest.log
+       log:  c:\ado\ian\metamiss\metamisstest.log
   log type:  text
- opened on:  12 May 2022, 11:11:01
+ opened on:  12 May 2022, 19:34:50
 
 . 
 . cscript metamiss
@@ -22,6 +22,27 @@ N:\Home\ado\stbplus\m\metan.ado
 17
 
 . set seed 3467145
+
+. 
+. // UTILITIES
+. prog def dicmd
+  1. noi di as input `"`0'"'
+  2. `0'
+  3. end
+
+. 
+. prog def mycompare
+  1. if mi("`3'") local 3 1E-7
+  2. if reldif(`1',`2')>`3' {
+  3.         if !mi("`4'") di as error "Error in `4'"
+  4.         di as error "Results differ relatively by " reldif(`1',`2') " > `3
+> '"
+  5.         di as error "Result 1: `1'"
+  6.         di as error "Result 2: `2'"
+  7.         exit 9
+  8. }
+  9. else di as text "Results differ relatively by " reldif(`1',`2') " <= `3'"
+ 10. end
 
 . 
 . // CREATE DATA
@@ -52,14 +73,14 @@ N:\Home\ado\stbplus\m\metan.ado
   3. local result_metamiss = r(ES)
   4. dicmd metan r1 f1 r2 f2, nograph fixedi `measure'
   5. local result_metan = r(ES)
-  6. assert float(`result_metamiss') == float(`result_metan')
+  6. mycompare `result_metamiss' `result_metan' 2E-8 "MAR `measure'"
   7. 
 . // compare with metan under M=F
 . dicmd metamiss r1 f1 m1 r2 f2 m2, imor(0) nograph `measure'
   8. local result_metamiss = r(ES)
   9. dicmd metan r1 fm1 r2 fm2, nograph fixedi `measure'
  10. local result_metan = r(ES)
- 11. assert float(`result_metamiss') == float(`result_metan')
+ 11. mycompare `result_metamiss' `result_metan' 2E-8 "M=F `measure'"
  12. 
 . // compare opposite ways round
 . dicmd metamiss r1 f1 m1 r2 f2 m2, imor(1 2) sdlogimor(.2 .4) nograph `measure
@@ -69,8 +90,8 @@ N:\Home\ado\stbplus\m\metan.ado
 > ure'
  15. if "`measure'" == "rd" local result_metan = -r(ES)
  16. else local result_metan = 1/r(ES)
- 17. assert reldif(`result_metamiss', `result_metan') < 1E-8
- 18.  
+ 17. mycompare `result_metamiss' `result_metan' 1E-8 "Opp `measure'"
+ 18. 
 . // check error message
 . dicmd cap noi metamiss r1 f1 m1 r2 f2 m2, imor(logimor) sdlogimor(.2 .4) nogr
 > aph `measure'
@@ -82,7 +103,7 @@ N:\Home\ado\stbplus\m\metan.ado
  22. dicmd metamiss2 r1 f1 m1 r2 f2 m2, impmean(1) fixed metanopt(nograph) `mea
 > sure'
  23. local result2 = r(ES)
- 24. dicmd assert reldif(`result1', `result2') < 1E-8
+ 24. mycompare `result1' `result2' 1E-8 "metamiss2 `measure'"
  25. 
 . dicmd metamiss r1 f1 m1 r2 f2 m2, logimor(-1) sdlogimor(1) nograph method(Tay
 > lor) `measure'
@@ -90,7 +111,7 @@ N:\Home\ado\stbplus\m\metan.ado
  27. dicmd metamiss2 r1 f1 m1 r2 f2 m2, impmean(-1) impsd(1) fixed metanopt(nog
 > raph) `measure'
  28. local result2 = r(ES)
- 29. dicmd assert reldif(`result1', `result2') < 1E-8
+ 29. mycompare `result1' `result2' 1E-8 "metamiss2 impsd `measure'"
  30. 
 . }
 metamiss r1 f1 zero r2 f2 zero, logimor(0) nograph rd
@@ -170,6 +191,7 @@ I² (%)               |      0.0%      0.0%     80.1%
 H = relative excess in Cochran's Q over its degrees-of-freedom
 I² = proportion of total variation in effect estimate due to between-study hete
 > rogeneity (based on Q)
+Results differ relatively by 1.446e-10 <= 2E-8
 metamiss r1 f1 m1 r2 f2 m2, imor(0) nograph rd
 *******************************************************************
 ******** METAMISS: meta-analysis allowing for missing data ********
@@ -247,6 +269,7 @@ I² (%)               |     63.6%      0.0%     90.7%
 H = relative excess in Cochran's Q over its degrees-of-freedom
 I² = proportion of total variation in effect estimate due to between-study hete
 > rogeneity (based on Q)
+Results differ relatively by 4.817e-10 <= 2E-8
 metamiss r1 f1 m1 r2 f2 m2, imor(1 2) sdlogimor(.2 .4) nograph rd
 *******************************************************************
 ******** METAMISS: meta-analysis allowing for missing data ********
@@ -335,6 +358,7 @@ I² (%)               |      0.0%      0.0%     80.1%
 H = relative excess in Cochran's Q over its degrees-of-freedom
 I² = proportion of total variation in effect estimate due to between-study hete
 > rogeneity (based on Q)
+Results differ relatively by 5.365e-10 <= 1E-8
 cap noi metamiss r1 f1 m1 r2 f2 m2, imor(logimor) sdlogimor(.2 .4) nograph rd
 *******************************************************************
 ******** METAMISS: meta-analysis allowing for missing data ********
@@ -398,7 +422,7 @@ Method:                            Taylor series approximation
 Second stage model:                Fixed effect meta-analysis
 
 (Calling metan  ...)
-assert reldif(.0109151972537267, .0109151950965695) < 1E-8
+Results differ relatively by 2.134e-09 <= 1E-8
 metamiss r1 f1 m1 r2 f2 m2, logimor(-1) sdlogimor(1) nograph method(Taylor) rd
 *******************************************************************
 ******** METAMISS: meta-analysis allowing for missing data ********
@@ -458,7 +482,7 @@ Method:                            Taylor series approximation
 Second stage model:                Fixed effect meta-analysis
 
 (Calling metan  ...)
-assert reldif(.024217073653398, .0242170766074421) < 1E-8
+Results differ relatively by 2.884e-09 <= 1E-8
 metamiss r1 f1 zero r2 f2 zero, logimor(0) nograph rr
 *******************************************************************
 ******** METAMISS: meta-analysis allowing for missing data ********
@@ -537,6 +561,7 @@ I² (%)               |      0.0%      0.0%     80.1%
 H = relative excess in Cochran's Q over its degrees-of-freedom
 I² = proportion of total variation in effect estimate due to between-study hete
 > rogeneity (based on Q)
+Results differ relatively by 1.363e-09 <= 2E-8
 metamiss r1 f1 m1 r2 f2 m2, imor(0) nograph rr
 *******************************************************************
 ******** METAMISS: meta-analysis allowing for missing data ********
@@ -615,6 +640,7 @@ I² (%)               |     51.6%      0.0%     88.8%
 H = relative excess in Cochran's Q over its degrees-of-freedom
 I² = proportion of total variation in effect estimate due to between-study hete
 > rogeneity (based on Q)
+Results differ relatively by 1.636e-08 <= 2E-8
 metamiss r1 f1 m1 r2 f2 m2, imor(1 2) sdlogimor(.2 .4) nograph rr
 *******************************************************************
 ******** METAMISS: meta-analysis allowing for missing data ********
@@ -703,6 +729,7 @@ I² (%)               |      0.0%      0.0%     80.1%
 H = relative excess in Cochran's Q over its degrees-of-freedom
 I² = proportion of total variation in effect estimate due to between-study hete
 > rogeneity (based on Q)
+Results differ relatively by 3.486e-09 <= 1E-8
 cap noi metamiss r1 f1 m1 r2 f2 m2, imor(logimor) sdlogimor(.2 .4) nograph rr
 *******************************************************************
 ******** METAMISS: meta-analysis allowing for missing data ********
@@ -766,7 +793,7 @@ Method:                            Taylor series approximation
 Second stage model:                Fixed effect meta-analysis
 
 (Calling metan  ...)
-assert reldif(1.053021143819455, 1.053021133440941) < 1E-8
+Results differ relatively by 5.055e-09 <= 1E-8
 metamiss r1 f1 m1 r2 f2 m2, logimor(-1) sdlogimor(1) nograph method(Taylor) rr
 *******************************************************************
 ******** METAMISS: meta-analysis allowing for missing data ********
@@ -826,7 +853,7 @@ Method:                            Taylor series approximation
 Second stage model:                Fixed effect meta-analysis
 
 (Calling metan  ...)
-assert reldif(1.270709772899861, 1.270709768411845) < 1E-8
+Results differ relatively by 1.976e-09 <= 1E-8
 metamiss r1 f1 zero r2 f2 zero, logimor(0) nograph or
 *******************************************************************
 ******** METAMISS: meta-analysis allowing for missing data ********
@@ -905,6 +932,7 @@ I² (%)               |      0.0%      0.0%     80.1%
 H = relative excess in Cochran's Q over its degrees-of-freedom
 I² = proportion of total variation in effect estimate due to between-study hete
 > rogeneity (based on Q)
+Results differ relatively by 1.158e-08 <= 2E-8
 metamiss r1 f1 m1 r2 f2 m2, imor(0) nograph or
 *******************************************************************
 ******** METAMISS: meta-analysis allowing for missing data ********
@@ -983,6 +1011,7 @@ I² (%)               |     53.9%      0.0%     89.2%
 H = relative excess in Cochran's Q over its degrees-of-freedom
 I² = proportion of total variation in effect estimate due to between-study hete
 > rogeneity (based on Q)
+Results differ relatively by 3.667e-09 <= 2E-8
 metamiss r1 f1 m1 r2 f2 m2, imor(1 2) sdlogimor(.2 .4) nograph or
 *******************************************************************
 ******** METAMISS: meta-analysis allowing for missing data ********
@@ -1071,6 +1100,7 @@ I² (%)               |      0.0%      0.0%     80.1%
 H = relative excess in Cochran's Q over its degrees-of-freedom
 I² = proportion of total variation in effect estimate due to between-study hete
 > rogeneity (based on Q)
+Results differ relatively by 1.322e-09 <= 1E-8
 cap noi metamiss r1 f1 m1 r2 f2 m2, imor(logimor) sdlogimor(.2 .4) nograph or
 *******************************************************************
 ******** METAMISS: meta-analysis allowing for missing data ********
@@ -1134,7 +1164,7 @@ Method:                            Taylor series approximation
 Second stage model:                Fixed effect meta-analysis
 
 (Calling metan  ...)
-assert reldif(1.071193338991669, 1.071193324105557) < 1E-8
+Results differ relatively by 7.187e-09 <= 1E-8
 metamiss r1 f1 m1 r2 f2 m2, logimor(-1) sdlogimor(1) nograph method(Taylor) or
 *******************************************************************
 ******** METAMISS: meta-analysis allowing for missing data ********
@@ -1194,7 +1224,7 @@ Method:                            Taylor series approximation
 Second stage model:                Fixed effect meta-analysis
 
 (Calling metan  ...)
-assert reldif(1.310231927035086, 1.31023191363926) < 1E-8
+Results differ relatively by 5.798e-09 <= 1E-8
 
 . 
 . // check help file
@@ -2050,7 +2080,7 @@ I² = proportion of total variation in effect estimate due to between-study hete
 . 
 . log close
       name:  <unnamed>
-       log:  C:\ado\ian\metamiss\metamisstest.log
+       log:  c:\ado\ian\metamiss\metamisstest.log
   log type:  text
- closed on:  12 May 2022, 11:11:28
+ closed on:  12 May 2022, 19:35:17
 -------------------------------------------------------------------------------

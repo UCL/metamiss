@@ -1,5 +1,5 @@
 /*
-*! version 3.17  16may2022
+*! version 3.17  16may2022 - RELEASED TO SSC 
 	handles new metan which returns results on log RR/OR scale
 	with thanks to David Fisher 15feb2022
 version 3.16  Ian White 02oct2018

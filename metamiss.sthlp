@@ -15,7 +15,7 @@
 {viewerjumpto "Saved variables" "metamiss##Savedvariables"}{...}
 {viewerjumpto "Examples" "metamiss##Examples"}{...}
 {viewerjumpto "Note" "metamiss##Note"}{...}
-{viewerjumpto "Authors" "metamiss##Authors"}{...}
+{viewerjumpto "Authors and Updates" "metamiss##Authors"}{...}
 {viewerjumpto "References" "metamiss##References"}{...}
 {viewerjumpto "Please cite this program as" "metamiss##Pleasecitethisprogramas"}{...}
 {viewerjumpto "See also" "metamiss##Seealso"}{...}
@@ -344,15 +344,21 @@ different handling of zero cells. For example,
 only does this for 3 studies with r2+m2==0. 
 
 
-{title:Authors}{marker Authors}
+{title:Authors and Updates}{marker Authors}
 
 {pstd}Ian White, MRC Clinical Trials Unit at UCL, London, UK. 
 
 {pstd}Julian Higgins, School of Social and Community Medicine, University of Bristol, UK.
 
+{pstd}We thank David Fisher for help in making this version compatible with version 4 of {help metan},
+and Ella Marley-Zagar for help with testing.
+
+{pstd}You can get the latest version of this package by visiting {browse "https://github.com/UCL/metamiss"}
+or within Stata by running 
+{stata "net from https://raw.githubusercontent.com/UCL/metamiss/master"}.
+
 {pstd}For assistance please email {browse "mailto:ian.white@ucl.ac.uk":ian.white@ucl.ac.uk}.
 
-{pstd}We thank David Fisher for help in making this version compatible with version 4 of {help metan}.
 
 
 {title:References}{marker References}
@@ -389,5 +395,5 @@ Stata J. 3:716–40.
 
 {title:See also}{marker Seealso}
 
-{help metan}
+{help metan} if installed.
 {help metamiss2} if installed.

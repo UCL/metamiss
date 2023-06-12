@@ -399,6 +399,9 @@ and Ella Marley-Zagar for help with testing.
 or within Stata by running 
 {stata "net from https://raw.githubusercontent.com/UCL/metamiss/master"}.
 
+{pstd}You can browse my other Stata software using 
+{stata "net from http://www.homepages.ucl.ac.uk/~rmjwiww/stata/"}.
+
 {pstd}For assistance please email {browse "mailto:ian.white@ucl.ac.uk":ian.white@ucl.ac.uk}.
 
 

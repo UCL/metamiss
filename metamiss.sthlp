@@ -1,4 +1,5 @@
 {smcl}
+{* updated 12jun2023}{* Ian White}{...}
 {* updated 16may2022}{* Ian White}{...}
 {* 7sep2007}{* Ian White}{...}
 {vieweralsosee "metan (if installed)" "metan"}{...}
@@ -15,9 +16,9 @@
 {viewerjumpto "Saved variables" "metamiss##Savedvariables"}{...}
 {viewerjumpto "Examples" "metamiss##Examples"}{...}
 {viewerjumpto "Note" "metamiss##Note"}{...}
-{viewerjumpto "Authors and Updates" "metamiss##Authors"}{...}
 {viewerjumpto "References" "metamiss##References"}{...}
-{viewerjumpto "Please cite this program as" "metamiss##Pleasecitethisprogramas"}{...}
+{viewerjumpto "Please cite this program" "metamiss##Pleasecitethisprogram"}{...}
+{viewerjumpto "Authors and Updates" "metamiss##Authors"}{...}
 {viewerjumpto "See also" "metamiss##Seealso"}{...}
 {title:Title}
 
@@ -344,6 +345,47 @@ different handling of zero cells. For example,
 only does this for 3 studies with r2+m2==0. 
 
 
+{title:References}{marker References}
+
+{pstd}{marker ForsterSmith}Forster JJ, Smith PWF (1998).  Model-based inference for categorical survey data 
+subject to non-ignorable non-response.  Journal of the Royal Statistical 
+Society (B) 60: 57-70. 
+{browse "https://doi.org/10.1111/1467-9868.00108"}
+
+{pstd}{marker GambleHollis}Gamble C, Hollis S (2005).  Uncertainty method improved on best-worst case analysis 
+in a binary meta-analysis.  Journal of Clinical Epidemiology 58: 579-588. 
+{browse "https://doi.org/10.1016/j.jclinepi.2004.09.013"}
+
+{pstd}{marker Higgins++08}Higgins JPT, White IR, Wood A (2008).  
+Imputation methods for missing outcome data in meta-analysis of clinical trials.  
+Clinical Trials 2008; 5: 225-239. 
+{browse "https://doi.org/10.1177/1740774508091600"}
+
+{pstd}{marker White++08}White IR, Higgins JPT, Wood AM (2008).
+Allowing for uncertainty due to missing data in meta-analysis. 
+1. Two-stage methods.  Statistics in Medicine 27: 711-727.
+{browse "http://doi.wiley.com/10.1002/sim.3008"}
+
+{pstd}{marker WhiteHiggins}White IR, Higgins JPT (2016). Meta-Analysis with missing data. 
+In: Palmer TM, Sterne JAC, editors. Meta-Analysis in Stata: An Updated Collection from the Stata Journal. 2nd ed. 
+{browse "https://www.stata.com/bookstore/meta-analysis-in-stata/"}
+
+{pstd}{marker Chaimani++}Chaimani A, Mavridis D, Higgins J, Salanti G, White IR (2018). 
+Allowing for informative missingness in aggregate data meta-analysis with continuous or binary outcomes: extensions to metamiss. 
+Stata J. 3:716–40. 
+{browse "https://www.stata-journal.com/article.html?article=st0540"}
+
+
+{title:Please cite this program}{marker Pleasecitethisprogram}
+
+{phang}If you find this command useful, please cite it as below (and please check for updates): 
+
+{pstd}{marker citethis}White IR, Higgins JPT. Meta-analysis with missing data. Stata J. 2009;9:57–69. 
+{browse "http://www.stata-journal.com/article.html?article=st0157"}
+
+{phang}The lead author (below) would love to hear from you about how you are using the package.
+
+
 {title:Authors and Updates}{marker Authors}
 
 {pstd}Ian White, MRC Clinical Trials Unit at UCL, London, UK. 
@@ -358,39 +400,6 @@ or within Stata by running
 {stata "net from https://raw.githubusercontent.com/UCL/metamiss/master"}.
 
 {pstd}For assistance please email {browse "mailto:ian.white@ucl.ac.uk":ian.white@ucl.ac.uk}.
-
-
-
-{title:References}{marker References}
-
-{pstd}{marker ForsterSmith}Forster JJ, Smith PWF (1998).  Model-based inference for categorical survey data 
-subject to non-ignorable non-response.  Journal of the Royal Statistical 
-Society (B) 60: 57-70.
-
-{pstd}{marker GambleHollis}Gamble C, Hollis S (2005).  Uncertainty method improved on best-worst case analysis 
-in a binary meta-analysis.  Journal of Clinical Epidemiology 58: 579-588.
-
-{pstd}{marker Higgins++08}Higgins JPT, White IR, Wood A (2008).  
-Imputation methods for missing outcome data in meta-analysis of clinical trials.  
-Clinical Trials 2008; 5: 225-239. 
-
-{pstd}{marker White++08}White IR, Higgins JPT, Wood AM (2008).
-Allowing for uncertainty due to missing data in meta-analysis. 
-1. Two-stage methods.  Statistics in Medicine 27: 711-727.
-
-{pstd}{marker WhiteHiggins}White IR, Higgins JPT (2016). Meta-Analysis with missing data. 
-In: Palmer TM, Sterne JAC, editors. Meta-Analysis in Stata: An Updated Collection from the Stata Journal. 2nd ed. 
-{browse "https://www.stata.com/bookstore/meta-analysis-in-stata/"}
-
-{pstd}{marker Chaimani++}Chaimani A, Mavridis D, Higgins J, Salanti G, White IR (2018). 
-Allowing for informative missingness in aggregate data meta-analysis with continuous or binary outcomes: extensions to metamiss. 
-Stata J. 3:716–40. 
-
-
-{title:Please cite this program as}{marker Pleasecitethisprogramas}
-
-{pstd}{marker citethis}White IR, Higgins JPT. Meta-analysis with missing data. Stata J. 2009;9:57–69. 
-{browse "http://www.stata-journal.com/article.html?article=st0157"}
 
 
 {title:See also}{marker Seealso}

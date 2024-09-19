@@ -2,4 +2,4 @@ v 3
 
 d Ian White's meta-analysis software
 
-p metamiss: Meta-analysis with missing data
+p metamiss Meta-analysis with missing data
